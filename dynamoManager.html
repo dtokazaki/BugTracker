@@ -1,0 +1,230 @@
+<!DOCTYPE>
+<html>
+<head>
+
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<script type="text/javascript">
+AWS.config.update({
+  region: "us-west-2",
+  // The endpoint should point to the local or remote computer where DynamoDB (downloadable) is running.
+  endpoint: 'http://localhost:8000',
+  /*
+    accessKeyId and secretAccessKey defaults can be used while using the downloadable version of DynamoDB. 
+    For security reasons, do not store AWS Credentials in your files. Use Amazon Cognito instead.
+  */
+  accessKeyId: "fakeMyKeyId",
+  secretAccessKey: "fakeSecretAccessKey"
+});
+
+
+var dynamodb = new AWS.DynamoDB();
+var docClient = new AWS.DynamoDB.DocumentClient();
+
+function updateItem() {
+	update("Bugs");
+	update("Managers");
+}
+function update(tname) {
+    var x = document.getElementById("updateBug").elements[0].value;
+    var y = document.getElementById("updateBug").elements[1].value;
+    var table = tname;
+    var id = x;
+
+    var params = {
+        TableName:table,
+        Key:{
+            "id": parseInt(id)
+        },
+        UpdateExpression: "set dev = :d",
+        ExpressionAttributeValues:{
+            ":d": y
+        },
+        ReturnValues:"UPDATED_NEW"
+    };
+
+    docClient.update(params, function(err, data) {
+        if (err) {
+            document.getElementById('textarea').innerHTML = "Unable to update item: " + "\n" + JSON.stringify(err, undefined, 2);
+        } else {
+            document.getElementById('textarea').innerHTML = "UpdateItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+        }
+    });
+    var getParams = {
+        TableName : "Bugs",
+        Key : {
+            "id": parseInt(id)
+        }
+    };
+    docClient.get(getParams,function(err,data) {
+        if(err) {
+            document.getElementById('textarea').innerHTML = "Unable to read item: " + "\n" + JSON.stringify(err, undefined, 2);
+
+        } else {
+        	table = "Developers"
+            var newParams = {
+                TableName : table,
+                Item : data.Item
+            }
+            docClient.put(newParams, function(err, data) {
+                if (err) {
+                    document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
+                } else {
+                    document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+                }
+            });
+        }
+    });       
+}
+
+
+function scanDataBugs() {
+    document.getElementById('textarea').innerHTML = "";
+    document.getElementById('textarea').innerHTML += "Scanning for bugs with ids between 0 and 5000." + "\n";
+
+    var params = {
+        TableName: "Bugs",
+        ProjectionExpression: "#ids, descr, doing, dev, stage",
+        FilterExpression: "#ids BETWEEN :start_id AND :end_id",
+        ConsistentRead: true,
+        ExpressionAttributeNames: {
+            "#ids": "id"
+        },
+        ExpressionAttributeValues: {
+            ":start_id": 0,
+            ":end_id": 5000
+        }
+    };
+
+    docClient.scan(params, onScan);
+
+    function onScan(err, data) {
+        if (err) {
+            document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
+        } else {
+            document.getElementById('textarea').innerHTML += "Scan succeeded: " + "\n";
+            data.Items.forEach(function(bug) {
+                document.getElementById('textarea').innerHTML += bug.id + ": " + bug.descr["S"] + " : " + bug.doing["S"] + " : " + bug.dev + " : " + bug.stage + "\n";
+            });           
+        }
+    }
+}
+function scanDataManagers() {
+    document.getElementById('textarea').innerHTML = "";
+    document.getElementById('textarea').innerHTML += "Scanning for bugs with ids between 0 and 5000." + "\n";
+
+    var params = {
+        TableName: "Managers",
+        ProjectionExpression: "#ids, descr, doing, dev, stage",
+        FilterExpression: "#ids BETWEEN :start_id AND :end_id",
+        ConsistentRead: true,
+        ExpressionAttributeNames: {
+            "#ids": "id"
+        },
+        ExpressionAttributeValues: {
+            ":start_id": 0,
+            ":end_id": 5000
+        }
+    };
+
+    docClient.scan(params, onScan);
+
+    function onScan(err, data) {
+        if (err) {
+            document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
+        } else {
+            document.getElementById('textarea').innerHTML += "Scan succeeded: " + "\n";
+            data.Items.forEach(function(bug) {
+                document.getElementById('textarea').innerHTML += bug.id + ": " + bug.descr["S"] + " : " + bug.doing["S"] + " : " + bug.dev + " : " + bug.stage + "\n";
+            });         
+        }
+    }
+
+
+}
+function scanDataDevs() {
+    document.getElementById('textarea').innerHTML = "";
+    document.getElementById('textarea').innerHTML += "Scanning for bugs with ids between 0 and 5000." + "\n";
+
+    var params = {
+        TableName: "Developers",
+        ProjectionExpression: "#ids, descr, doing, dev, stage",
+        FilterExpression: "#ids BETWEEN :start_id AND :end_id",
+        ConsistentRead: true,
+        ExpressionAttributeNames: {
+            "#ids": "id"
+        },
+        ExpressionAttributeValues: {
+            ":start_id": 0,
+            ":end_id": 5000
+        }
+    };
+
+    docClient.scan(params, onScan);
+
+    function onScan(err, data) {
+        if (err) {
+            document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
+        } else {
+            document.getElementById('textarea').innerHTML += "Scan succeeded: " + "\n";
+            data.Items.forEach(function(bug) {
+                document.getElementById('textarea').innerHTML += bug.id + ": " + bug.descr["S"] + " : " + bug.doing["S"] + " : " + bug.dev + " : " + bug.stage + "\n";
+            });         
+        }
+    }
+
+
+}
+</script>
+</head>
+
+<body>
+	<a href = "table.html">
+    	<button type="button" class="btn btn-default">Table</button></a>
+	
+	<a href = "dynamoForm.html">
+	    <button type="button" class="btn btn-default">Home</button></a>
+	<div class="btn-group" role="group" aria-label="...">
+	    <a href = "dynamoTester.html" class="btn btn-default">Tester</a>
+	    <a href="dynamoDev.html" class="btn btn-default">Developer</a>
+	    <a href="dynamoManager.html" class="btn btn-default disabled">Manager</a>
+	</div>
+  <form id="updateBug">
+    <div class="form-group">
+    <label for="description">Bug ID:</label>
+    <input type="text" class="form-control" id="bugID1" placeholder="Unique Code">
+    </div>
+    <div class="form-group">
+    <label for="description">Please type the name of a developer:</label>
+    <input type="text" class="form-control" id="managerChoice" placeholder="Manager's decision">
+    </div>
+    <input id = "submit" type = "button" value = "Submit" onclick="updateItem();" />
+    <!-- <input id = "nonissue" type = "button" value = "Nonissue" onclick="updateItem();" />
+    <input id = "issue" type = "button" value = "Issue" onclick="updateItem();" />
+    <input  id = "fixed" type = "button" value = "Fixed" onclick="updateItem();" /> -->
+    <input id = "scanBug" type = "button" value = "Scan Bugs" onclick="scanDataBugs();" />
+    <input id = "scanTester" type = "button" value = "Scan Managers" onclick="scanDataManagers();" />
+    <input id = "scanDev" type = "button" value = "Scan Devs" onclick="scanDataDevs();" />
+    <!-- <div class="form-group">
+    <label for="during">What were you doing when you encountered the bug?</label>
+    <textarea class="form-control" id="during" rows="3" placeholder="What you were doing" type="text"></textarea>
+    </div>
+
+    <div>
+    <label for="bugID">Input the unique code of your bug.</label>
+    <input type="text" class="form-control" id="bugID1" placeholder="Unique Code">
+    </div>
+    <input id="Submit1" type="button" value="Create Item" onclick="updateItem();" /> -->
+</form>
+<br>
+<textarea readonly id= "textarea" style="width:400px; height:800px"></textarea>
+
+</body>
+</html>

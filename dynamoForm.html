@@ -1,0 +1,160 @@
+<!DOCTYPE>
+<html>
+<head>
+
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<script type="text/javascript">
+AWS.config.update({
+  region: "us-west-2",
+  // The endpoint should point to the local or remote computer where DynamoDB (downloadable) is running.
+  endpoint: 'http://localhost:8000',
+  /*
+    accessKeyId and secretAccessKey defaults can be used while using the downloadable version of DynamoDB. 
+    For security reasons, do not store AWS Credentials in your files. Use Amazon Cognito instead.
+  */
+  accessKeyId: "fakeMyKeyId",
+  secretAccessKey: "fakeSecretAccessKey"
+});
+
+
+var dynamodb = new AWS.DynamoDB();
+var docClient = new AWS.DynamoDB.DocumentClient();
+function createItem() {
+      var x = document.getElementById("addBug");
+      var id = x.elements[2].value;
+      var des = x.elements[0].value;
+      var doi = x.elements[1].value;
+      var params = {
+          TableName : "Bugs",
+          Item : {
+              "id": parseInt(id),
+              "descr": {"S": des},
+              "doing": {"S": doi},
+              "dev": {"S": " "},
+              "stage": {"S": "testing"}
+          }
+      };
+    docClient.put(params, function(err, data) {
+        if (err) {
+            document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
+        } else {
+            document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+        }
+    });
+    params = {
+    	TableName : "Testers",
+          Item : {
+              "id": parseInt(id),
+              "descr": {"S": des},
+              "doing": {"S": doi}
+          }
+      };
+    docClient.put(params, function(err, data) {
+        if (err) {
+            document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
+        } else {
+            document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+        }
+    });
+
+    updateItem(parseInt(id),"Bugs");
+    updateItem(parseInt(id),"Testers");
+}
+function updateItem(bugID,tname) {
+    var table = tname;
+    var id = bugID;
+
+    var params = {
+        TableName:table,
+        Key:{
+            "id": id
+        },
+        UpdateExpression: "set dev = :d, stage = :s",
+        ExpressionAttributeValues:{
+            ":d":" ",
+            ":s":"testing"
+        },
+        ReturnValues:"UPDATED_NEW"
+    };
+
+    docClient.update(params, function(err, data) {
+        if (err) {
+            document.getElementById('textarea').innerHTML = "Unable to update item: " + "\n" + JSON.stringify(err, undefined, 2);
+        } else {
+            document.getElementById('textarea').innerHTML = "UpdateItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+        }
+    });
+}
+function readItem() {
+    var x = document.getElementById("read");
+    var table = "Bugs";
+    var id = x.elements[0].value;
+
+    var params = {
+        TableName: table,
+        Key:{
+            "id": parseInt(id)
+        }
+    };
+    docClient.get(params, function(err, data) {
+        if (err) {
+            document.getElementById('textarea').innerHTML = "Unable to read item: " + "\n" + JSON.stringify(err, undefined, 2);
+        } else {
+            document.getElementById('textarea').innerHTML = "GetItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+        }
+    });
+}
+
+</script>
+</head>
+
+<body>
+	<a href = "table.html">
+    	<button type="button" class="btn btn-default">Tables</button></a>
+	<a href = "dynamoForm.html">
+	    <button type="button" class="btn btn-default disabled">Home</button></a>
+	<div class="btn-group" role="group" aria-label="...">
+	    <a href = "dynamoTester.html" class="btn btn-default">Tester</a>
+	    <a href="dynamoDev.html" class="btn btn-default">Developer</a>
+	    <a href="dynamoManager.html" class="btn btn-default">Manager</a>
+	</div>
+  <form id="addBug">
+    <div class="form-group">
+    <label for="description">Description of the bug:</label>
+    <textarea class="form-control" id="description" rows="3" placeholder="Description" type="text"></textarea>
+    </div>
+
+    <div class="form-group">
+    <label for="during">What were you doing when you encountered the bug?</label>
+    <textarea class="form-control" id="during" rows="3" placeholder="What you were doing" type="text"></textarea>
+    </div>
+
+    <div>
+    <label for="bugID">Input the unique code of your bug (between 0 and 5000 please).</label>
+    <input type="text" class="form-control" id="bugID1" placeholder="Unique Code">
+    </div>
+    <input id="Submit1" type="button" value="Create Item" onclick="createItem();" />
+</form>
+
+<br/>
+<form id="read">
+  <div>
+    <label for="bugID">If you already submitted this form, please input your unique code to check on the status of your bug.</label>
+    <input type="text" class="form-control" id="bugID2" placeholder="Unique Code">
+  </div>
+  <input id="Submit2" type="button" value="Look At Item" onclick="readItem();" />
+
+</form>
+
+<br>
+<textarea readonly id= "textarea" style="width:400px; height:800px"></textarea>
+</body>
+</html>

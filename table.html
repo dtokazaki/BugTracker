@@ -1,0 +1,124 @@
+<!DOCTYPE
+>
+<html>
+<head>
+
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<script type="text/javascript">
+AWS.config.update({
+  region: "us-west-2",
+  // The endpoint should point to the local or remote computer where DynamoDB (downloadable) is running.
+  endpoint: 'http://localhost:8000',
+  /*
+    accessKeyId and secretAccessKey defaults can be used while using the downloadable version of DynamoDB. 
+    For security reasons, do not store AWS Credentials in your files. Use Amazon Cognito instead.
+  */
+  accessKeyId: "fakeMyKeyId",
+  secretAccessKey: "fakeSecretAccessKey"
+});
+
+
+var dynamodb = new AWS.DynamoDB();
+var docClient = new AWS.DynamoDB.DocumentClient();
+function createTable() {
+    table = document.getElementById("create").elements[0].value;
+    var params = {
+        TableName : table,
+        KeySchema: [
+            { AttributeName: "id", KeyType: "HASH"}
+        ],
+        AttributeDefinitions: [       
+            { AttributeName: "id", AttributeType: "N" }
+        ],
+        ProvisionedThroughput: {       
+            ReadCapacityUnits: 5,
+            WriteCapacityUnits: 5
+        }
+    };
+
+    dynamodb.createTable(params, function(err, data) {
+        if (err) {
+            document.getElementById('textarea').innerHTML = "Unable to create table: " + "\n" + JSON.stringify(err, undefined, 2);
+        } else {
+            document.getElementById('textarea').innerHTML = "Created table: " + "\n" + JSON.stringify(data, undefined, 2);
+        }
+    });
+}
+
+function deleteTable() {
+    table = document.getElementById("delete").elements[0].value;
+
+    var params = {
+        TableName : table
+    };
+
+    dynamodb.deleteTable(params, function(err, data) {
+        if (err) {
+            document.getElementById('textarea').innerHTML = "Unable to delete table: " + "\n" + JSON.stringify(err, undefined, 2);
+        } else {
+            document.getElementById('textarea').innerHTML = "Table deleted.";
+        }
+    });
+}
+
+function listTables() {
+    var params = {};
+    dynamodb.listTables(params, function(err, data) {
+    if (err){
+        document.getElementById('textarea').innerHTML = "Unable to list tables: " + "\n" + JSON.stringify(err, undefined, 2);
+    }
+    else{
+     document.getElementById('textarea').innerHTML = "List of tables: " + "\n" + JSON.stringify(data, undefined, 2);
+    }
+})
+}//
+</script>
+</head>
+
+<body>
+    <a href = "table.html">
+        <button type="button" class="btn btn-default disabled">Table</button></a>
+    <a href = "dynamoForm.html">
+        <button type="button" class="btn btn-default">Home</button></a>
+    <div class="btn-group" role="group" aria-label="...">
+        <a href = "dynamoTester.html" class="btn btn-default">Tester</a>
+        <a href="dynamoDev.html" class="btn btn-default">Developer</a>
+        <a href="dynamoManager.html" class="btn btn-default">Manager</a>
+    </div>
+
+<form id="create">
+  <div>
+    <label for="tableID">If you already submitted this form, please input your unique code to check on the status of your bug.</label>
+    <input type="text" class="form-control" id="bugID2" placeholder="Table name">
+  </div>
+  <input id="submit1" type="button" value="Create Table" onclick="createTable();" />
+
+</form>
+<br/>
+<br/>
+<form id="delete">
+  <div>
+    <label for="tableID">If you already submitted this form, please input your unique code to delete your bug.</label>
+    <input type="text" class="form-control" id="bugID3" placeholder="Table name">
+  </div>
+  <input id="submit2" type="button" value="Delete Table" onclick="deleteTable();" />
+</form>
+<form id="list">
+    <div>
+        <label for "tableID">Click here to list all the tables that currently exist.</label>
+    </div>
+    <input id="submit3" type="button" value="List Tables" onclick="listTables();" />
+</form>
+
+<textarea readonly id= "textarea" style="width:400px; height:800px"></textarea>
+
+</body>
+</html>
