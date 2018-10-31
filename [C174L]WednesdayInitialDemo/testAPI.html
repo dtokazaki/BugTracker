@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>Basic Javascript Example</title>
+
+<!--    <script src="./test.js"></script>-->
+</head>
+
+<body onload="a();">
+    
+    <p id="description"></p>
+
+</body>
+
+<script>
+    var url = 'https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getForm';
+    var data = "id=" + "ea4cec393c2c4694a176930ee8c5cc11";
+  //  var data = "god_id=" + "$pbkdf2-sha256$500002$YMx5T6m1trZWKiVEyLm3Vg$q.NuE7TEvUAQSyNP4AolzLaJmCAOCHlNnQyP6S6Y5M4";
+    function a() {
+        $.ajax({
+               url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getForm",
+               data: data,
+               type: "GET",
+               //headers: { 'x-api-key': 'IRhxCk4NmV4mpQHK75NsL4GEqSocd4X56fFgX7BS' },
+               beforeSend: function(xhr) {
+                    xhr.setRequestHeader('x-api-key', 'IRhxCk4NmV4mpQHK75NsL4GEqSocd4X56fFgX7BS');
+               },
+               success: function (data) {
+                    alert("Success!" + JSON.stringify(data))
+               }
+        })
+
+    }
+
+                                          
+</script>
+</html>

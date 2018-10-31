@@ -1,0 +1,3 @@
+All of this code is currently runnable on AWS, and is connected to the API.
+There isn't really a way to test the code without being on AWS, but I made the "testAPI.html" file to show what connecting to the API is like. 
+
