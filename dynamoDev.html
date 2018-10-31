@@ -14,18 +14,31 @@
 
 
 <script type="text/javascript">
+
 AWS.config.update({
   region: "us-west-2",
   // The endpoint should point to the local or remote computer where DynamoDB (downloadable) is running.
-  endpoint: 'http://localhost:8000',
+  //endpoint: 'http://localhost:8000',
   /*
     accessKeyId and secretAccessKey defaults can be used while using the downloadable version of DynamoDB. 
     For security reasons, do not store AWS Credentials in your files. Use Amazon Cognito instead.
   */
-  accessKeyId: "fakeMyKeyId",
-  secretAccessKey: "fakeSecretAccessKey"
+  //accessKeyId: "fakeMyKeyId",
+  //secretAccessKey: "fakeSecretAccessKey"
 });
 
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
+    RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
+});
+AWS.config.credentials.get(function(){
+
+    // Credentials will be available when this function is called.
+    var accessKeyId = AWS.config.credentials.accessKeyId;
+    var secretAccessKey = AWS.config.credentials.secretAccessKey;
+    //var sessionToken = AWS.config.credentials.sessionToken;
+
+});
 
 var dynamodb = new AWS.DynamoDB();
 var docClient = new AWS.DynamoDB.DocumentClient();
