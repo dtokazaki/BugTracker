@@ -5,23 +5,6 @@ description: This is a test
 details: I hope it works
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-assignToDeveloper():
-APIKey: K4cb4rI8Gq1LPzZFE4UXa3tTO3uA8JtO98CIayhI
-
-developer: developer1
-manager: manager1
-id:
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-getStatus():
-APIKey: NZLlovyCrO83qyPR4IXNl7ARqF9nLaFn2EZp7AlL
-
-status:"Bug Reported"
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 testerToManager():
 APIKey: bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg
 
@@ -32,10 +15,10 @@ id:
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-getManager():
-APIKey: NyIwQLLyus97qJRhul7Zw7iMZlliEkC33OGoC3HS
+getTester():
+APIKey: NZLlovyCrO83qyPR4IXNl7ARqF9nLaFn2EZp7AlL
 
-manager: manager1
+tester:"tester1"
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -44,7 +27,15 @@ APIKey: K4cb4rI8Gq1LPzZFE4UXa3tTO3uA8JtO98CIayhI
 
 developer: developer1
 manager: manager1
-id: 
+id:
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+getManager():
+APIKey: NyIwQLLyus97qJRhul7Zw7iMZlliEkC33OGoC3HS
+
+manager: manager1
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -72,7 +63,7 @@ id:
 
 
 
-testerUnresolved():
+example ID: da5bbd83ada649ab8e99a202b3b81ea5
 
 
 
