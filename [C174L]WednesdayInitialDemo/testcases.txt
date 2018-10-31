@@ -7,8 +7,8 @@ details: I hope it works
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 testerToManager():
-APIKey: bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg
-Method:PUT 
+APIKey: bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSi
+Method:GET
 
 tester: tester1
 manager: manager1
