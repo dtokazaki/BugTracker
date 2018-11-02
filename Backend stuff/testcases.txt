@@ -1,6 +1,6 @@
 createForm():
 APIKey: NZLlovyCrO83qyPR4IXNl7ARqF9nLaFn2EZp7AlL
-Method:PUT
+Method:GET
 
 description: This is a test
 details: I hope it works
@@ -15,8 +15,7 @@ manager: manager1
 text: Seg fault on page
 id:
 
-+++++++++++++++++++++++++
-JzYRhBdiPk4CewLHnGBJXaJq3Pr6OSx9au6aH90i++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 getTester():
 APIKey: NZLlovyCrO83qyPR4IXNl7ARqF9nLaFn2EZp7AlL
@@ -28,7 +27,7 @@ tester:"tester1"
 
 assignToDeveloper():
 APIKey: K4cb4rI8Gq1LPzZFE4UXa3tTO3uA8JtO98CIayhI
-Method:PUT
+Method:GET
 
 developer: developer1
 manager: manager1
@@ -55,7 +54,7 @@ developer: developer1
 
 developerToTester():
 APIKey:= loGBGfW6Jx7nQrl4QOdF41uE1EG6zjK03yoTSEZX
-Method: PUT
+Method: GET
 
 developer=developer1
 text: It works on my computer
@@ -65,7 +64,7 @@ id:
 
 testerComplete():
 APIKey: JA3fTWr53X9BCGO4FjtjU8sLLdG96dFN13eFEem1
-Method: PUT
+Method: GET
 
 tester: tester1
 id:
