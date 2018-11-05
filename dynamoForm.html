@@ -2,173 +2,248 @@
 <html>
 <head>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
-
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <meta content="utf-8" http-equiv="encoding">
+</head>
+<body>
 <script type="text/javascript">
 
+// AWS.config.update({
+//   region: "us-west-2",
+//   endpoint: 'http://localhost:8000',
+//   accessKeyId: "fakeMyKeyId",
+//   secretAccessKey: "fakeSecretAccessKey"
+// });
 AWS.config.update({
   region: "us-west-2",
-  // The endpoint should point to the local or remote computer where DynamoDB (downloadable) is running.
-  //endpoint: 'http://localhost:8000',
-  /*
-    accessKeyId and secretAccessKey defaults can be used while using the downloadable version of DynamoDB. 
-    For security reasons, do not store AWS Credentials in your files. Use Amazon Cognito instead.
-  */
-  //accessKeyId: "fakeMyKeyId",
-  //secretAccessKey: "fakeSecretAccessKey"
-});
+ });
 
 AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
-    RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
+ IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
+ RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
 });
 AWS.config.credentials.get(function(){
-
-    // Credentials will be available when this function is called.
-    var accessKeyId = AWS.config.credentials.accessKeyId;
-    var secretAccessKey = AWS.config.credentials.secretAccessKey;
-    //var sessionToken = AWS.config.credentials.sessionToken;
-
+ var accessKeyId = AWS.config.credentials.accessKeyId;
+ var secretAccessKey = AWS.config.credentials.secretAccessKey;
 });
 
 
 var dynamodb = new AWS.DynamoDB();
 var docClient = new AWS.DynamoDB.DocumentClient();
 function createItem() {
-      var x = document.getElementById("addBug");
-      var id = x.elements[2].value;
-      var des = x.elements[0].value;
-      var doi = x.elements[1].value;
-      var params = {
-          TableName : "Bugs",
-          Item : {
-              "id": parseInt(id),
-              "descr": {"S": des},
-              "doing": {"S": doi},
-              "dev": {"S": " "},
-              "stage": {"S": "testing"}
-          }
-      };
-    docClient.put(params, function(err, data) {
-        if (err) {
-            document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
-        } else {
-            document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-        }
-    });
-    params = {
-    	TableName : "Testers",
-          Item : {
-              "id": parseInt(id),
-              "descr": {"S": des},
-              "doing": {"S": doi}
-          }
-      };
-    docClient.put(params, function(err, data) {
-        if (err) {
-            document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
-        } else {
-            document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-        }
-    });
-
-    updateItem(parseInt(id),"Bugs");
-    updateItem(parseInt(id),"Testers");
-}
+	var x = document.getElementById("addBug");
+	var id = 1000+parseInt(9000*Math.random());
+	// while(id==0) {
+	//  id = makeID();
+	// }
+	// var id = bugID;
+	//var id = x.elements[2].value;
+	var des = x.elements[0].value;
+	var doi = x.elements[1].value;
+	if(des==""||doi=="") {}
+	else {
+	var params = {
+		TableName : "Bugs",
+		ExpressionAttributeNames : {
+			"#ids" : "id"
+		},
+		ConditionExpression : "attribute_not_exists(#ids)",
+		Item : {
+			"id": parseInt(id),
+			"descr": {"S": des},
+			"doing": {"S": doi},
+			// "dev": {"S": " "},
+			// "stage": {"S": "testing"}
+		}
+	};
+	docClient.put(params, function(err, data) {
+		if (err) {
+			//document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
+		} else {
+			// document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+		}
+	});
+	params = {
+		TableName : "Testers",
+		ExpressionAttributeNames : {
+			"#ids" : "id"
+		},
+		ConditionExpression : "attribute_not_exists(#ids)",
+		Item : {
+			"id": parseInt(id),
+			"descr": {"S": des},
+			"doing": {"S": doi},
+			// "dev": {"S": " "},
+			// "stage": {"S": "testing"}
+		}
+	};
+	docClient.put(params, function(err, data) {
+		if (err) {
+			createItem();
+			// document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
+		} else {
+			// document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+			document.getElementById("uniqueCode").innerHTML = 'The unique code for the bug you  found is ' + id;
+			updateItem(parseInt(id),"Bugs");
+			updateItem(parseInt(id),"Testers");
+		}
+	});
+}}
 function updateItem(bugID,tname) {
-    var table = tname;
-    var id = bugID;
+	var table = tname;
+	var id = bugID;
 
-    var params = {
-        TableName:table,
-        Key:{
-            "id": id
-        },
-        UpdateExpression: "set dev = :d, stage = :s",
-        ExpressionAttributeValues:{
-            ":d":" ",
-            ":s":"testing"
-        },
-        ReturnValues:"UPDATED_NEW"
-    };
+	var params = {
+		TableName:table,
+		Key:{
+			"id": id
+		},
+		UpdateExpression: "set dev = :d, stage = :s",
+		ExpressionAttributeValues:{
+			":d":" ",
+			":s":"testing"
+		},
+		ReturnValues:"UPDATED_NEW"
+	};
 
-    docClient.update(params, function(err, data) {
-        if (err) {
-            document.getElementById('textarea').innerHTML = "Unable to update item: " + "\n" + JSON.stringify(err, undefined, 2);
-        } else {
-            document.getElementById('textarea').innerHTML = "UpdateItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-        }
-    });
+	docClient.update(params, function(err, data) {
+		if (err) {
+			// document.getElementById('textarea').innerHTML = "Unable to update item: " + "\n" + JSON.stringify(err, undefined, 2);
+		} else {
+		  if(data.Attributes.stage!="testing" || data.Attributes.dev!=" ") updateItem(bugID,tname);
+			// document.getElementById('textarea').innerHTML = "UpdateItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+		}
+	});
+}
+function makeID() {
+  //idNum = 1000+parseInt(9000*Math.random());
+  idNum=3000+parseInt(10*Math.random());
+  var params = {
+	TableName : "Bugs",
+	KeyConditionExpression: "#ids = :idid",
+	ExpressionAttributeNames:{
+	  "#ids": "id"
+	},
+	ExpressionAttributeValues: {
+	  ":idid":idNum
+	}
+  };
+  var unique = true;
+  // docClient.query(params,function(err,data) {
+  //  if(err) {
+  //  } else {
+  //    // console.log(data);
+  //    // console.log(data.Count);
+  //    // console.log(data.Count>0);
+  //    // console.log('id ' + idNum + ' ' + typeof(idNum));
+  //    // console.log(params);
+  //    //printItem(idNum);
+  //    if(data.Count==0) {
+  //      console.log(data);
+  //      console.log(params.ExpressionAttributeValues[":idid"]);
+  //      printItem(params.ExpressionAttributeValues[":idid"]);
+  //      //return params.ExpressionAttributeValues[":idid"];
+  //      createItem(params.ExpressionAttributeValues[":idid"]);
+  //    }
+  //    if(data.Count>0) makeID();
+  //    else {
+  //      console.log(params.ExpressionAttributeValues);
+  //      // return idNum;
+  //    }
+  //  }
+  // });
+  return idNum;
+  //console.log(idNum);
+  // return params.ExpressionAttributeValues[":idid"];
 }
 function readItem() {
-    var x = document.getElementById("read");
-    var table = "Bugs";
-    var id = x.elements[0].value;
+	var x = document.getElementById("read");
+	var table = "Bugs";
+	var id = x.elements[0].value;
+	if(id=="") {}
+	else {
 
-    var params = {
-        TableName: table,
-        Key:{
-            "id": parseInt(id)
-        }
-    };
-    docClient.get(params, function(err, data) {
-        if (err) {
-            document.getElementById('textarea').innerHTML = "Unable to read item: " + "\n" + JSON.stringify(err, undefined, 2);
-        } else {
-            document.getElementById('textarea').innerHTML = "GetItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-        }
-    });
+		var params = {
+			TableName: table,
+			Key:{
+				"id": parseInt(id)
+			}
+		};
+		docClient.get(params, function(err, data) {
+			if (err) {
+				// document.getElementById('textarea').innerHTML = "Unable to read item: " + "\n" + JSON.stringify(err, undefined, 2);
+			} else if (data.Item == undefined) {
+			} else {
+				var bug = data.Item;
+				var description = " ";
+				if(bug.descr["S"]==undefined) description = "\nDescription of bug: " + bug.descr;
+				else description = "\nDescription of bug: " + bug.descr["S"];
+
+				var doing = " ";			
+				if(bug.doing["S"]==undefined) doing = "\nWhen it happened: " + bug.doing;
+				else doing = "\nWhen it happened: " + bug.doing["S"];			
+				document.getElementById("bugStatusID").innerHTML = "Bug ID: " + bug.id;
+				document.getElementById("bugStatusDescr").innerHTML = description;
+				document.getElementById("bugStatusDoing").innerHTML = doing;
+				document.getElementById("bugStatusStatus").innerHTML = "Status: " + bug.stage;;
+				// document.getElementById('textarea').innerHTML = "GetItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+			}
+		});
+	}
 }
 
 </script>
 </head>
 
 <body>
-	<a href = "table.html">
-    	<button type="button" class="btn btn-default">Tables</button></a>
-	<a href = "dynamoForm.html">
-	    <button type="button" class="btn btn-default disabled">Home</button></a>
-	<div class="btn-group" role="group" aria-label="...">
-	    <a href = "dynamoTester.html" class="btn btn-default">Tester</a>
-	    <a href="dynamoDev.html" class="btn btn-default">Developer</a>
-	    <a href="dynamoManager.html" class="btn btn-default">Manager</a>
-	</div>
+  <a href = "table.html">
+	  <button type="button" class="btn btn-default">Table</button></a>
+  <a href = "dynamoForm.html">
+	  <button type="button" class="btn btn-default disabled">Home</button></a>
+  <div class="btn-group" role="group" aria-label="...">
+	  <a href = "tester.html" class="btn btn-default">Tester</a>
+	  <a href="developer.html" class="btn btn-default">Developer</a>
+	  <a href="manager.html" class="btn btn-default">Manager</a>
+  </div>
   <form id="addBug">
-    <div class="form-group">
-    <label for="description">Description of the bug:</label>
-    <textarea class="form-control" id="description" rows="3" placeholder="Description" type="text"></textarea>
-    </div>
+	<div class="form-group">
+	<label for="description">Description of the bug:</label>
+	<textarea class="form-control" id="description" rows="3" placeholder="Description" type="text"></textarea>
+	</div>
 
-    <div class="form-group">
-    <label for="during">What were you doing when you encountered the bug?</label>
-    <textarea class="form-control" id="during" rows="3" placeholder="What you were doing" type="text"></textarea>
-    </div>
+	<div class="form-group">
+	<label for="during">What were you doing when you encountered the bug?</label>
+	<textarea class="form-control" id="during" rows="3" placeholder="What you were doing" type="text"></textarea>
+	</div>
 
-    <div>
-    <label for="bugID">Input the unique code of your bug (between 0 and 5000 please).</label>
-    <input type="text" class="form-control" id="bugID1" placeholder="Unique Code">
-    </div>
-    <input id="Submit1" type="button" value="Create Item" onclick="createItem();" />
+	<!-- <div>
+	<label for="bugID">Input the unique code of your bug (between 0 and 5000 please).</label>
+	<input type="text" class="form-control" id="bugID1" placeholder="Unique Code">
+	</div> -->
+	<input id="Submit1" type="button" value="Create Item" onclick="createItem();" />
 </form>
+<br/>
+<p id="uniqueCode"></p>
 
 <br/>
 <form id="read">
   <div>
-    <label for="bugID">If you already submitted this form, please input your unique code to check on the status of your bug.</label>
-    <input type="text" class="form-control" id="bugID2" placeholder="Unique Code">
+	<label for="bugID">If you already submitted this form, please input your unique code to check on the status of your bug.</label>
+	<input type="text" class="form-control" id="bugID2" placeholder="Unique Code">
   </div>
   <input id="Submit2" type="button" value="Look At Item" onclick="readItem();" />
 
 </form>
 
 <br>
-<textarea readonly id= "textarea" style="width:400px; height:800px"></textarea>
+<p id = "bugStatusID"></p>
+<p id = "bugStatusDescr"></p>
+<p id = "bugStatusDoing"></p>
+<p id = "bugStatusStatus"></p>
 </body>
 </html>

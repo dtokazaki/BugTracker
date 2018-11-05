@@ -1,42 +1,36 @@
-<!DOCTYPE
->
+<!DOCTYPE>
 <html>
 <head>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
-
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <meta content="utf-8" http-equiv="encoding">
+</head>
+<body>
+
 <script type="text/javascript">
 
+// AWS.config.update({
+//   region: "us-west-2",
+//   endpoint: 'http://localhost:8000',
+//   accessKeyId: "fakeMyKeyId",
+//   secretAccessKey: "fakeSecretAccessKey"
+// });
 AWS.config.update({
   region: "us-west-2",
-  // The endpoint should point to the local or remote computer where DynamoDB (downloadable) is running.
-  //endpoint: 'http://localhost:8000',
-  /*
-    accessKeyId and secretAccessKey defaults can be used while using the downloadable version of DynamoDB. 
-    For security reasons, do not store AWS Credentials in your files. Use Amazon Cognito instead.
-  */
-  //accessKeyId: "fakeMyKeyId",
-  //secretAccessKey: "fakeSecretAccessKey"
-});
+ });
 
 AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
-    RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
+	IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
+	RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
 });
 AWS.config.credentials.get(function(){
-
-    // Credentials will be available when this function is called.
-    var accessKeyId = AWS.config.credentials.accessKeyId;
-    var secretAccessKey = AWS.config.credentials.secretAccessKey;
-    //var sessionToken = AWS.config.credentials.sessionToken;
-
+	var accessKeyId = AWS.config.credentials.accessKeyId;
+	var secretAccessKey = AWS.config.credentials.secretAccessKey;
 });
 
 
@@ -103,24 +97,23 @@ function listTables() {
     <a href = "dynamoForm.html">
         <button type="button" class="btn btn-default">Home</button></a>
     <div class="btn-group" role="group" aria-label="...">
-        <a href = "dynamoTester.html" class="btn btn-default">Tester</a>
-        <a href="dynamoDev.html" class="btn btn-default">Developer</a>
-        <a href="dynamoManager.html" class="btn btn-default">Manager</a>
+        <a href = "tester.html" class="btn btn-default">Tester</a>
+        <a href="developer.html" class="btn btn-default">Developer</a>
+        <a href="manager.html" class="btn btn-default">Manager</a>
     </div>
-
+<p>Here you can create and delete tables, or list them to see which tables exist at any given moment.</p>
+<p>Keep in mind that everything will break if the tables named "Bugs" "Testers" "Developers" and "Managers" don't exist. This page will have trouble if Bugs in particular does not exist.</p>
 <form id="create">
   <div>
-    <label for="tableID">If you already submitted this form, please input your unique code to check on the status of your bug.</label>
+    <label for="tableID">Create "Bugs", "Testers", "Developers", or "Managers" here.</label>
     <input type="text" class="form-control" id="bugID2" placeholder="Table name">
   </div>
   <input id="submit1" type="button" value="Create Table" onclick="createTable();" />
 
 </form>
-<br/>
-<br/>
 <form id="delete">
   <div>
-    <label for="tableID">If you already submitted this form, please input your unique code to delete your bug.</label>
+    <label for="tableID">Delete "Bugs", "Testers", "Developers", or "Managers" here.</label>
     <input type="text" class="form-control" id="bugID3" placeholder="Table name">
   </div>
   <input id="submit2" type="button" value="Delete Table" onclick="deleteTable();" />
@@ -131,8 +124,102 @@ function listTables() {
     </div>
     <input id="submit3" type="button" value="List Tables" onclick="listTables();" />
 </form>
+<script>
+function bugData() {
+    var params = {
+        TableName: "Bugs",
+        ProjectionExpression: "#ids, descr, doing, dev, stage",
+        FilterExpression: "#ids BETWEEN :start_id AND :end_id",
+        ConsistentRead: true,
+        ExpressionAttributeNames: {
+            "#ids": "id"
+        },
+        ExpressionAttributeValues: {
+            ":start_id": 1000,
+            ":end_id": 10000
+        }
+    };
 
-<textarea readonly id= "textarea" style="width:400px; height:800px"></textarea>
+    docClient.scan(params, onScan);
+    var elmnts = new Array();
+    var count = 0;
+    function onScan(err, data) {
+        if (err) {
+            //document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
+        } else {
+            var myTableDiv = document.getElementById("testTable");
+            var body = document.body;
+            var tbl = document.createElement('table');
+            tbl.style.width  = '800';
+            tbl.style.border = '1px solid black';
+            var tr = tbl.insertRow();
+            
+            var td1 = tr.insertCell();
+            td1.appendChild(document.createTextNode("ID"));
+            td1.style.border = '2px solid black';
+            
+            var td2 = tr.insertCell();
+            td2.appendChild(document.createTextNode("Description"));
+            td2.style.border = '2px solid black';
+            
+            var td3 = tr.insertCell();
+            td3.appendChild(document.createTextNode("What you were doing"));
+            td3.style.border = '2px solid black';
+            
+            var td4 = tr.insertCell();
+            td4.appendChild(document.createTextNode("Developer"));
+            td4.style.border = '2px solid black';
+            
+            var td5 = tr.insertCell();
+            td5.appendChild(document.createTextNode("Status"));
+            td5.style.border = '2px solid black';
+            
+            var i = 0;
+
+            data.Items.forEach(function(bug) {
+                var id = bug.id;
+
+                //id
+                var tr = tbl.insertRow();
+                i++;
+                var td1 = tr.insertCell();
+                td1.appendChild(document.createTextNode(bug.id));
+                td1.style.border = '1px solid black';
+
+                //description
+                var td2 = tr.insertCell();
+                if(bug.descr["S"]==undefined) td2.appendChild(document.createTextNode(bug.descr));
+                else td2.appendChild(document.createTextNode(bug.descr["S"]));
+                td2.style.border = '1px solid black';
+
+                //what client was doing
+                var td3 = tr.insertCell();
+                if(bug.doing["S"]==undefined) td3.appendChild(document.createTextNode(bug.doing));
+                else td3.appendChild(document.createTextNode(bug.doing["S"]));
+                td3.style.border = '1px solid black';
+                
+                //dev name
+                var td4 = tr.insertCell();
+                var devName = bug.dev;
+                if(devName==" ") devName = "not assigned";
+                td4.appendChild(document.createTextNode(devName));
+                td4.style.border = '1px solid black';
+                
+                //status
+                var td5 = tr.insertCell();
+                td5.appendChild(document.createTextNode(bug.stage));
+                td5.style.border = '1px solid black';
+               
+            }); 
+            body.appendChild(tbl);
+        }
+    }
+
+}
+
+bugData();
+</script>
+<textarea readonly id= "textarea" style="width:400px; height:50px"></textarea>
 
 </body>
 </html>
