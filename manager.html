@@ -48,7 +48,6 @@ function updateItem(bugID, dname, tname) {
     var table = tname;
     var id = bugID;
     var devName = dname;
-    console.log(devName);
     var params = {
         TableName:table,
         Key:{
@@ -123,6 +122,7 @@ function managerData() {
 		if (err) {
 			//document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
 		} else {
+			var devNameList = ["Developer A","Developer B","Developer C","Developer D"];
 			var body = document.body;
 			var tbl = document.createElement('table');
 			tbl.style.width  = '800';
@@ -204,47 +204,27 @@ function managerData() {
 				var div2 = document.createElement('div');
 				div2.setAttribute("class","dropdown-menu");
 
-				var devA = document.createElement('button');
-				devA.innerHTML = "Developer A";
-				devA.setAttribute("class","dropdown-item");
-				devA.addEventListener('click', function() {
-					updateItem(bug.id, "Developer A","Managers");
-					updateItem(bug.id, "Developer A","Bugs");
-					//removeElement
-					//this.parentNode.parentNode.removeChild(this.parentNode);
-					this.parentNode.parentNode.firstElementChild.innerHTML = "Developer A";
-					this.parentNode.parentNode.firstElementChild.setAttribute("class","btn btn-default dropdown-toggle disabled");
-					td4.innerHTML = "Developer A";
-				});
-				var devB = document.createElement('button');
-				devB.innerHTML = "Developer B";
-				devB.setAttribute("class","dropdown-item");
-				devB.addEventListener('click', function() {
-					updateItem(bug.id, "Developer B","Managers");
-					updateItem(bug.id, "Developer B","Bugs");
-					this.parentNode.parentNode.firstElementChild.innerHTML = "Developer B";
-					this.parentNode.parentNode.firstElementChild.setAttribute("class","btn btn-default dropdown-toggle disabled");
-					td4.innerHTML = "Developer B";
-				});
-				var devC = document.createElement('button');
-				devC.innerHTML = "Developer C";
-				devC.setAttribute("class","dropdown-item");
+				var i;
+				for (i=0; i < devNameList.length; i++) {
+					var name = devNameList[i];
+					var devA = document.createElement('button');
+					devA.innerHTML = name;
+					devA.setAttribute("class","dropdown-item");
+					devA.addEventListener('click', function() {
+						var chosenName = this.innerHTML;
+						updateItem(bug.id, chosenName,"Managers");
+						updateItem(bug.id, chosenName,"Bugs");
 
-				devC.addEventListener('click', function() {
-					updateItem(bug.id, "Developer C","Managers");
-					updateItem(bug.id, "Developer C","Bugs");
-					this.parentNode.parentNode.firstElementChild.innerHTML = "Developer C";
-					this.parentNode.parentNode.firstElementChild.setAttribute("class","btn btn-default dropdown-toggle disabled");
-					td4.innerHTML = "Developer C";
-				});
-
-				div2.appendChild(devA);
-				div2.appendChild(devB);
-				div2.appendChild(devC);
+						this.parentNode.parentNode.children[1].innerHTML = chosenName;
+						this.parentNode.parentNode.children[1].setAttribute("class","btn btn-default dropdown-toggle disabled");
+						td4.innerHTML = chosenName;
+					});
+					div2.appendChild(devA);
+					div1.appendChild(div2);
+				}
 				div1.appendChild(button);
-				div1.appendChild(div2);
+				
 				td6.appendChild(div1);
-
 
 				td6.style.border = '1px solid black';
 			}); 
