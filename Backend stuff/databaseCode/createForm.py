@@ -22,9 +22,9 @@ def createForm(event,context):
     data['details']=details
     data['testerDescription'] = " "
     data['devDescription']=" "
-    data["status"]="pending"
-    data['timeCreated'] = str(datetime.datetime.time(datetime.datetime.now()))
-    data['lastUpdatedTime']= " "
+    data["status"]="testing"
+    data['dateCreated'] = str(datetime.datetime.now().date())
+    data['lastUpdatedDay']= " "
     data['lastUpdatedBy'] = " "        
     data['tester']=" "
     data['developer']=" "

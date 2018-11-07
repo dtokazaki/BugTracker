@@ -13,28 +13,6 @@
 <body>
 <script type="text/javascript">
 
-// AWS.config.update({
-//   region: "us-west-2",
-//   endpoint: 'http://localhost:8000',
-//   accessKeyId: "fakeMyKeyId",
-//   secretAccessKey: "fakeSecretAccessKey"
-// });
-AWS.config.update({
-  region: "us-west-2",
- });
-
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
- IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
- RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
-});
-AWS.config.credentials.get(function(){
- var accessKeyId = AWS.config.credentials.accessKeyId;
- var secretAccessKey = AWS.config.credentials.secretAccessKey;
-});
-
-
-var dynamodb = new AWS.DynamoDB();
-var docClient = new AWS.DynamoDB.DocumentClient();
 function createItem() {
 	var x = document.getElementById("addBug");
 	
@@ -51,79 +29,13 @@ function createItem() {
 		},
 		success: function (data) {
 			alert("Success!" + JSON.stringify(data))
-			bugStatusId= JSON.stringify(data)
+			document.getElementById("uniqueCode").innerHTML= "The unique code for the bug you found is " + JSON.stringify(data);
 		}
 
 	})
 	    
 }
-function updateItem(bugID,tname) {
-	var table = tname;
-	var id = bugID;
 
-	var params = {
-		TableName:table,
-		Key:{
-			"id": id
-		},
-		UpdateExpression: "set dev = :d, stage = :s",
-		ExpressionAttributeValues:{
-			":d":" ",
-			":s":"testing"
-		},
-		ReturnValues:"UPDATED_NEW"
-	};
-
-	docClient.update(params, function(err, data) {
-		if (err) {
-			// document.getElementById('textarea').innerHTML = "Unable to update item: " + "\n" + JSON.stringify(err, undefined, 2);
-		} else {
-		  if(data.Attributes.stage!="testing" || data.Attributes.dev!=" ") updateItem(bugID,tname);
-			// document.getElementById('textarea').innerHTML = "UpdateItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-		}
-	});
-}
-function makeID() {
-  //idNum = 1000+parseInt(9000*Math.random());
-  idNum=3000+parseInt(10*Math.random());
-  var params = {
-	TableName : "Bugs",
-	KeyConditionExpression: "#ids = :idid",
-	ExpressionAttributeNames:{
-	  "#ids": "id"
-	},
-	ExpressionAttributeValues: {
-	  ":idid":idNum
-	}
-  };
-  var unique = true;
-  // docClient.query(params,function(err,data) {
-  //  if(err) {
-  //  } else {
-  //    // console.log(data);
-  //    // console.log(data.Count);
-  //    // console.log(data.Count>0);
-  //    // console.log('id ' + idNum + ' ' + typeof(idNum));
-  //    // console.log(params);
-  //    //printItem(idNum);
-  //    if(data.Count==0) {
-  //      console.log(data);
-  //      console.log(params.ExpressionAttributeValues[":idid"]);
-  //      printItem(params.ExpressionAttributeValues[":idid"]);
-  //      //return params.ExpressionAttributeValues[":idid"];
-  //      createItem(params.ExpressionAttributeValues[":idid"]);
-  //    }
-  //    if(data.Count>0) makeID();
-  //    else {
-  //      console.log(params.ExpressionAttributeValues);
-  //      // return idNum;
-  //    }
-  //  }
-  // });
-  return idNum;
-  //console.log(idNum);
-  // return params.ExpressionAttributeValues[":idid"];
-}
 function readItem() {
 	var x = document.getElementById("read");
 	var id = x.elements[0].value;
@@ -140,8 +52,8 @@ function readItem() {
 		success: function (data) {
 			alert("Success!" + JSON.stringify(data))
 			document.getElementById("bugStatusID").innerHTML="Bug ID: " + data['code'];
-			document.getElementById("bugStatusDescr").innerHTML = data['description'];
-			document.getElementById("bugStatusDoing").innerHTML= data['details'];
+			document.getElementById("bugStatusDescr").innerHTML = "Description: " + data['description'];
+			document.getElementById("bugStatusDoing").innerHTML= "Details: " + data['details'];
 			document.getElementById("bugStatusStatus").innerHTML="Status: " + data['status'];
 		}
      })
