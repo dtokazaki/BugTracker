@@ -1,0 +1,200 @@
+<!DOCTYPE>
+<html>
+<head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+</head>
+<body>
+<script type="text/javascript">
+
+// AWS.config.update({
+//   region: "us-west-2",
+//   endpoint: 'http://localhost:8000',
+//   accessKeyId: "fakeMyKeyId",
+//   secretAccessKey: "fakeSecretAccessKey"
+// });
+AWS.config.update({
+  region: "us-west-2",
+ });
+
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+ IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
+ RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
+});
+AWS.config.credentials.get(function(){
+ var accessKeyId = AWS.config.credentials.accessKeyId;
+ var secretAccessKey = AWS.config.credentials.secretAccessKey;
+});
+
+
+var dynamodb = new AWS.DynamoDB();
+var docClient = new AWS.DynamoDB.DocumentClient();
+function createItem() {
+	var x = document.getElementById("addBug");
+	
+	var des = x.elements[0].value;
+	var doi = x.elements[1].value;
+
+    var data = "description=" + des +"&details="+doi;
+ 	$.ajax({
+		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/createForm",
+		data: data,
+		type: "GET",
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader('x-api-key', 'NZLlovyCrO83qyPR4IXNl7ARqF9nLaFn2EZp7AlL');
+		},
+		success: function (data) {
+			alert("Success!" + JSON.stringify(data))
+			bugStatusId= JSON.stringify(data)
+		}
+
+	})
+	    
+}
+function updateItem(bugID,tname) {
+	var table = tname;
+	var id = bugID;
+
+	var params = {
+		TableName:table,
+		Key:{
+			"id": id
+		},
+		UpdateExpression: "set dev = :d, stage = :s",
+		ExpressionAttributeValues:{
+			":d":" ",
+			":s":"testing"
+		},
+		ReturnValues:"UPDATED_NEW"
+	};
+
+	docClient.update(params, function(err, data) {
+		if (err) {
+			// document.getElementById('textarea').innerHTML = "Unable to update item: " + "\n" + JSON.stringify(err, undefined, 2);
+		} else {
+		  if(data.Attributes.stage!="testing" || data.Attributes.dev!=" ") updateItem(bugID,tname);
+			// document.getElementById('textarea').innerHTML = "UpdateItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+		}
+	});
+}
+function makeID() {
+  //idNum = 1000+parseInt(9000*Math.random());
+  idNum=3000+parseInt(10*Math.random());
+  var params = {
+	TableName : "Bugs",
+	KeyConditionExpression: "#ids = :idid",
+	ExpressionAttributeNames:{
+	  "#ids": "id"
+	},
+	ExpressionAttributeValues: {
+	  ":idid":idNum
+	}
+  };
+  var unique = true;
+  // docClient.query(params,function(err,data) {
+  //  if(err) {
+  //  } else {
+  //    // console.log(data);
+  //    // console.log(data.Count);
+  //    // console.log(data.Count>0);
+  //    // console.log('id ' + idNum + ' ' + typeof(idNum));
+  //    // console.log(params);
+  //    //printItem(idNum);
+  //    if(data.Count==0) {
+  //      console.log(data);
+  //      console.log(params.ExpressionAttributeValues[":idid"]);
+  //      printItem(params.ExpressionAttributeValues[":idid"]);
+  //      //return params.ExpressionAttributeValues[":idid"];
+  //      createItem(params.ExpressionAttributeValues[":idid"]);
+  //    }
+  //    if(data.Count>0) makeID();
+  //    else {
+  //      console.log(params.ExpressionAttributeValues);
+  //      // return idNum;
+  //    }
+  //  }
+  // });
+  return idNum;
+  //console.log(idNum);
+  // return params.ExpressionAttributeValues[":idid"];
+}
+function readItem() {
+	var x = document.getElementById("read");
+	var id = x.elements[0].value;
+
+	var data = "id=" + id;
+	
+	$.ajax({
+		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getForm",
+		data: data,
+		type: "GET",
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader('x-api-key', 'NZLlovyCrO83qyPR4IXNl7ARqF9nLaFn2EZp7AlL');
+		},
+		success: function (data) {
+			alert("Success!" + JSON.stringify(data))
+			document.getElementById("bugStatusID").innerHTML="Bug ID: " + data['code'];
+			document.getElementById("bugStatusDescr").innerHTML = data['description'];
+			document.getElementById("bugStatusDoing").innerHTML= data['details'];
+			document.getElementById("bugStatusStatus").innerHTML="Status: " + data['status'];
+		}
+     })
+		
+}
+
+</script>
+</head>
+
+<body>
+  <a href = "table.html">
+	  <button type="button" class="btn btn-default">Table</button></a>
+  <a href = "dynamoForm.html">
+	  <button type="button" class="btn btn-default disabled">Home</button></a>
+  <div class="btn-group" role="group" aria-label="...">
+	  <a href = "tester.html" class="btn btn-default">Tester</a>
+	  <a href="developer.html" class="btn btn-default">Developer</a>
+	  <a href="manager.html" class="btn btn-default">Manager</a>
+  </div>
+  <form id="addBug">
+	<div class="form-group">
+	<label for="description">Description of the bug:</label>
+	<textarea class="form-control" id="description" rows="3" placeholder="Description" type="text"></textarea>
+	</div>
+
+	<div class="form-group">
+	<label for="during">What were you doing when you encountered the bug?</label>
+	<textarea class="form-control" id="during" rows="3" placeholder="What you were doing" type="text"></textarea>
+	</div>
+
+	<!-- <div>
+	<label for="bugID">Input the unique code of your bug (between 0 and 5000 please).</label>
+	<input type="text" class="form-control" id="bugID1" placeholder="Unique Code">
+	</div> -->
+	<input id="Submit1" type="button" value="Create Item" onclick="createItem();" />
+</form>
+<br/>
+<p id="uniqueCode"></p>
+
+<br/>
+<form id="read">
+  <div>
+	<label for="bugID">If you already submitted this form, please input your unique code to check on the status of your bug.</label>
+	<input type="text" class="form-control" id="bugID2" placeholder="Unique Code">
+  </div>
+  <input id="Submit2" type="button" value="Look At Item" onclick="readItem();" />
+
+</form>
+
+<br>
+<p id = "bugStatusID"></p>
+<p id = "bugStatusDescr"></p>
+<p id = "bugStatusDoing"></p>
+<p id = "bugStatusStatus"></p>
+</body>
+</html>
