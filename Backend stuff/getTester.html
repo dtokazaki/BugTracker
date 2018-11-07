@@ -11,10 +11,10 @@
 </head>
 
 <body onload="a();">
-    
+	
+   	 
     <p id="description"></p>
 
-</body>
 
 <script>
     var url = 'https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getForm';
@@ -31,6 +31,13 @@
                },
                success: function (data) {
                     alert("Success!" + JSON.stringify(data))
+					var body = document.body;
+					var par = document.createElement('p');
+					par.innerHTML=JSON.stringify(data);
+					body.appendChild(par);
+					console.log(data);
+					
+					
                }
         })
 
@@ -38,4 +45,6 @@
 
                                           
 </script>
+
+</body>
 </html>
