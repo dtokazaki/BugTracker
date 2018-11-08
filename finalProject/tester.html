@@ -141,28 +141,21 @@ function deleteItem(bugID,tname) {
 		}
 	});
 }
-function testerData() {
-	var params = {
-		TableName: "Testers",
-		ProjectionExpression: "#ids, descr, doing, dev, stage",
-		FilterExpression: "#ids BETWEEN :start_id AND :end_id",
-		ConsistentRead: true,
-		ExpressionAttributeNames: {
-			"#ids": "id"
+function testerData(tester) {
+	
+	 var data = "tester="+ tester;
+	 
+	 $.ajax({
+		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getTester",
+		data: data,
+		type: "GET",
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader('x-api-key', 'NZLlovyCrO83qyPR4IXNl7ARqF9nLaFn2EZp7AlL');
 		},
-		ExpressionAttributeValues: {
-			":start_id": 1000,
-			":end_id": 10000
-		}
-	};
-
-	docClient.scan(params, onScan);
-	var elmnts = new Array();
-	var count = 0;
-	function onScan(err, data) {
-		if (err) {
-			//document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
-		} else {
+		success: function (data) {
+			alert("Success!" + JSON.stringify(data))
+			console.log(data); 
+			
 			var myTableDiv = document.getElementById("testTable");
 			var body = document.body;
 			var tbl = document.createElement('table');
@@ -193,53 +186,53 @@ function testerData() {
 			var td6 = tr.insertCell();
 			td6.style.border = '2px solid black';
 			var i = 0;
-
-			data.Items.forEach(function(bug) {
-				var id = bug.id;
+		
+			console.log(data);
+			data.forEach(function(bug) {
+				var id = bug['id'];
 
 				//id
 				var tr = tbl.insertRow();
 				i++;
 				var td1 = tr.insertCell();
-				td1.appendChild(document.createTextNode(bug.id));
+				td1.appendChild(document.createTextNode(bug['code']));
 				td1.style.border = '1px solid black';
 
 				//description
 				var td2 = tr.insertCell();
-				if(bug.descr["S"]==undefined) td2.appendChild(document.createTextNode(bug.descr));
-				else td2.appendChild(document.createTextNode(bug.descr["S"]));
+				td2.appendChild(document.createTextNode(bug['description']));
 				td2.style.border = '1px solid black';
 
 				//what client was doing
 				var td3 = tr.insertCell();
-				if(bug.doing["S"]==undefined) td3.appendChild(document.createTextNode(bug.doing));
-				else td3.appendChild(document.createTextNode(bug.doing["S"]));
+				td3.appendChild(document.createTextNode(bug['details']));
 				td3.style.border = '1px solid black';
 				
 				//dev name
 				var td4 = tr.insertCell();
-				var devName = bug.dev;
+				var devName = bug['developer'];
 				if(devName==" ") devName = "not assigned";
 				td4.appendChild(document.createTextNode(devName));
 				td4.style.border = '1px solid black';
 				
 				//status
 				var td5 = tr.insertCell();
-				td5.appendChild(document.createTextNode(bug.stage));
+				td5.appendChild(document.createTextNode(bug['status']));
 				td5.style.border = '1px solid black';
 				
 				//tester's choice
 				var td6 = tr.insertCell();
 				var button1 = document.createElement('button');
 				button1.addEventListener('click', function() {
-					updateBug(bug.id,bug.dev,"issue");
+					// tester to manager
+					// if assigned tester to developer
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
 					i--;
 				});
 				button1.innerHTML = "issue";
 				var button2 = document.createElement('button');
 				button2.addEventListener('click', function() {
-					updateBug(bug.id,bug.dev,"fixed");
+					//tester fixed
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
 					i--;
 				});
@@ -250,11 +243,12 @@ function testerData() {
 			}); 
 			body.appendChild(tbl);
 		}
-	}
+
+	})
 
 }
 
-testerData();
+testerData("tester");
 </script>
 
 
