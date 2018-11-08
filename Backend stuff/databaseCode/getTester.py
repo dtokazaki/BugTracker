@@ -9,11 +9,16 @@ def getTester(event,context):
     tester = event['tester']
     
     response = table.query(
-        IndexName='tester-index',
-        KeyConditionExpression=Key('tester').eq(tester)
+        IndexName='status-index',
+        KeyConditionExpression=Key('status').eq("testing")
     )
-        
-    data = response['Items']
-        
+    
+    allTesters= response['Items']
+    
+    data=[]
+    for test in allTesters:
+        if test['tester']== tester:
+            data.append(test)
+    
     return data
     

@@ -6,11 +6,9 @@ def getManager(event,context):
     dynamodb = resource('dynamodb')
     table = dynamodb.Table('bugTracker')
     
-    manager = event['manager']
-    
     response = table.query(
         IndexName='manager-index',
-        KeyConditionExpression=Key('manager').eq(manager)
+        KeyConditionExpression=Key('manager').eq("manager")
     )
         
     data = response['Items']

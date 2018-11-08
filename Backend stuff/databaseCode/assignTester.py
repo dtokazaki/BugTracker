@@ -4,13 +4,12 @@ from boto3.dynamodb.conditions import Key
 import datetime
 
 
-def testerComplete(event,context):
+def assignTester(event,context):
     dynamodb = resource('dynamodb')
     table = dynamodb.Table('bugTracker')
     
     id = event['id']
     tester = event['tester']
-    text = event['text']
     
     try:
         response = table.get_item(
@@ -18,18 +17,16 @@ def testerComplete(event,context):
                 'code': id
             }
         )
-        myTuple = ("Bug Resolved")
-            
+    
+        myTuple= ("Manager assigned Bug to ",str(tester)," for testing")
         lastAction=""
         data = response['Item']
-        
-        data['developer']=" "
-        data['tester']=" "
-        data['manager']=" "
+                
+        data['tester'] = tester
         data['lastUpdatedDate']= str(datetime.datetime.now().date())
-        data['lastUpdatedBy']= tester
+        data['lastUpdatedBy']= manager
         data['lastAction']= lastAction.join(myTuple)
-        data['status']= "fixed"
+        data['status']= "Sent to Tester"
 
         table.put_item(Item = data)
         return 0

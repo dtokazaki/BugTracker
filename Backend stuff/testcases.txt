@@ -69,7 +69,32 @@ Method: GET
 tester: tester1
 id:
 
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+developerUnresolved():
+APIKey: 6Tn41vnLQ77wFuGgRRx5J3tgRE153n2e2axBQNqZ
+Method: GET
 
+developer: developer
+id:
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+assignTester():
+APIKey:	wODlTOiDwYy0wij4GC3e6dV2WGiYDOk3UCk5niQ3
+Method: GET
+
+tester: tester
+id: 
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+testerToDeveloper():
+APIKey: mw5D4ewYzn8ncrowOC2wA3GFyRvIfLbr3VPWZ5PY
+Method: GET
+
+tester: tester
+id:
+text:
 
 example ID: da5bbd83ada649ab8e99a202b3b81ea5
 

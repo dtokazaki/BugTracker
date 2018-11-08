@@ -16,3 +16,4 @@ def getDeveloper(event,context):
     data = response['Items']
         
     return data
+    

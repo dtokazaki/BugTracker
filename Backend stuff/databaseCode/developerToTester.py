@@ -26,10 +26,10 @@ def developerToTester(event,context):
         lastAction=""
             
         data['developerDescription']= text
-        data['lastUpdatedTime']= str(datetime.datetime.time(datetime.datetime.now()))
+        data['lastUpdatedDate']= str(datetime.datetime.now().date())
         data['lastUpdatedBy']= developer
         data['lastAction']= lastAction.join(myTuple)
-        data['status']= "Solution Completed and sent to tester"
+        data['status']= "testing"
 
         table.put_item(Item = data)
         return 0

@@ -10,7 +10,6 @@ def assignToDeveloper(event,context):
     
     id = event['id']
     developer = event['developer']
-    manager=event['manager']
     
     try:
         response = table.get_item(
@@ -19,15 +18,12 @@ def assignToDeveloper(event,context):
             }
         )
     
-        myTuple= (str(manager)," Assigned Bug to ",str(developer)," for development")
+        myTuple= ("Manager assigned Bug to ",str(developer)," for development")
         lastAction=""
         data = response['Item']
-        
-        if data['developer'] == developer:
-                return -2
-        
+                
         data['developer'] = developer
-        data['lastUpdatedTime']= str(datetime.datetime.time(datetime.datetime.now()))
+        data['lastUpdatedDate']= str(datetime.datetime.now().date())
         data['lastUpdatedBy']= manager
         data['lastAction']= lastAction.join(myTuple)
         data['status']= str("Sent to Developer")

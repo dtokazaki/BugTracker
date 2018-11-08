@@ -10,7 +10,7 @@ def testerToManager(event,context):
     
     id = event['id']
     tester = event['tester']
-    manager=event['manager']
+    severity = event['severity']
     text=event['text']
     
     try:
@@ -26,12 +26,12 @@ def testerToManager(event,context):
         
             
         data['testerDescription']= str(text)
-        data['manager'] = manager
-        data['tester']=tester
-        data['lastUpdatedTime']= str(datetime.datetime.time(datetime.datetime.now()))
+        data['manager'] = "manager"
+        data['lastUpdatedDate']= str(datetime.datetime.now().date())
         data['lastUpdatedBy']= str(data['tester'])
         data['lastAction']= lastAction.join(myTuple)
-        data['status']= "Bug Confirmed and sent to Manager"
+        data['status']= "pending"
+        data['severity']=severity
 
         table.put_item(Item = data)
         return 0
