@@ -19,6 +19,14 @@ function createItem() {
 	var des = x.elements[0].value;
 	var doi = x.elements[1].value;
 
+	//if (des == "") {
+	//	document.getElementById("uniqueCode").innerHTML="ERROR no description present";
+	//	return;
+	//}
+	//if (doi == "") {
+	//	doi = " ";
+	//}
+
     var data = "description=" + des +"&details="+doi;
  	$.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/createForm",
@@ -40,6 +48,10 @@ function readItem() {
 	var x = document.getElementById("read");
 	var id = x.elements[0].value;
 
+	//if (id == "") {
+	//	document.getElementById("bugStatusID").innerHTML="Bug ID is missing";
+	//	return;
+	//}
 	var data = "id=" + id;
 	
 	$.ajax({
@@ -55,7 +67,12 @@ function readItem() {
 			document.getElementById("bugStatusDescr").innerHTML = "Description: " + data['description'];
 			document.getElementById("bugStatusDoing").innerHTML= "Details: " + data['details'];
 			document.getElementById("bugStatusStatus").innerHTML="Status: " + data['status'];
-		}
+		}//,
+		//error: function(XMLHttpRequest, textStatus, errorThrown) {
+		//	document.getElementById("bugStatusID").innerHTML="ERROR: ID is invalid";
+		//	document.getElementById("bugStatusDescr").innerHTML= "Status: " + textStatus;
+		//	document.getElementById("bugStatusDoing").innerHTML=" Error: " + errorThrown;
+		//}
      })
 		
 }
