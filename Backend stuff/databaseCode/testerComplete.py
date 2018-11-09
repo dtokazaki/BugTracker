@@ -12,26 +12,24 @@ def testerComplete(event,context):
     tester = event['tester']
     text = event['text']
     
-    try:
-        response = table.get_item(
-            Key={
-                'code': id
-            }
-        )
-        myTuple = ("Bug Resolved")
+    response = table.get_item(
+        Key={
+            'code': id
+        }
+    )
+    
+    myTuple = ("Bug Resolved")
             
-        lastAction=""
-        data = response['Item']
+    lastAction=""
+    data = response['Item']
         
-        data['developer']=" "
-        data['tester']=" "
-        data['manager']=" "
-        data['lastUpdatedDate']= str(datetime.datetime.now().date())
-        data['lastUpdatedBy']= tester
-        data['lastAction']= lastAction.join(myTuple)
-        data['status']= "fixed"
-
-        table.put_item(Item = data)
-        return 0
-    except: 
-        return -1
+    data['developer']=" "
+    data['tester']=" "
+    data['manager']=" "
+    data['lastUpdatedDate']= str(datetime.datetime.now().date())
+    data['lastUpdatedBy']= tester
+    data['lastAction']= lastAction.join(myTuple)
+    data['status']= "fixed"
+    table.put_item(Item = data)
+    
+    return 0

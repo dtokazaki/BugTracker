@@ -12,26 +12,26 @@ def testerToDeveloper(event,context):
     tester = event['tester']
     text=event['text']
     
-    try:
-        response = table.get_item(
-            Key={
-                'code': id
-            }
-        )
     
-        lastAction=""
-        data = response['Item']
+    response = table.get_item(
+        Key={
+            'code': id
+        }
+    )
+    
+    lastAction=""
+    data = response['Item']
         
-        myTuple= ("Solution incomplete or incorrect. Sent back to ",str(data['developer']))
+    myTuple= ("Solution incomplete or incorrect. Sent back to ",str(data['developer']))
 
             
-        data['testerDescription']= str(text)
-        data['lastUpdatedDate']= str(datetime.datetime.now().date())
-        data['lastUpdatedBy']= str(data['tester'])
-        data['lastAction']= lastAction.join(myTuple)
-        data['status']= "issue"
+    data['testerDescription']= str(text)        
+    data['lastUpdatedDate']= str(datetime.datetime.now().date())
+    data['lastUpdatedBy']= str(data['tester'])
+    data['lastAction']= lastAction.join(myTuple)
+    data['status']= "issue"
 
-        table.put_item(Item = data)
-        return 0
-    except: 
-        return -1
+    table.put_item(Item = data)
+    
+    return 0
+    

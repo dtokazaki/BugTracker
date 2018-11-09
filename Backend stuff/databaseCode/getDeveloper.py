@@ -10,7 +10,7 @@ def getDeveloper(event,context):
     
     response = table.query(
         IndexName='status-index',
-        KeyConditionExpression=Key('status').eq("issue")
+        KeyConditionExpression=Key("status").eq("issue")
     )
         
     allDevs = response['Items']

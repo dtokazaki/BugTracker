@@ -17,15 +17,12 @@
 </body>
 
 <script>
-    var url = 'https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getForm';
     var data = "developer="+"developer1";
-  //  var data = "god_id=" + "$pbkdf2-sha256$500002$YMx5T6m1trZWKiVEyLm3Vg$q.NuE7TEvUAQSyNP4AolzLaJmCAOCHlNnQyP6S6Y5M4";
     function a() {
         $.ajax({
-               url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getTester",
+               url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getDeveloper",
                data: data,
                type: "GET",
-               //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
                beforeSend: function(xhr) {
                     xhr.setRequestHeader('x-api-key', 'JzYRhBdiPk4CewLHnGBJXaJq3Pr6OSx9au6aH90i');
                },

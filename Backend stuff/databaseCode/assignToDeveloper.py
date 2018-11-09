@@ -11,24 +11,23 @@ def assignToDeveloper(event,context):
     id = event['id']
     developer = event['developer']
     
-    try:
-        response = table.get_item(
-            Key={
-                'code': id
-            }
-        )
     
-        myTuple= ("Manager assigned Bug to ",str(developer)," for development")
-        lastAction=""
-        data = response['Item']
-                
-        data['developer'] = developer
-        data['lastUpdatedDate']= str(datetime.datetime.now().date())
-        data['lastUpdatedBy']= manager
-        data['lastAction']= lastAction.join(myTuple)
-        data['status']= str("Sent to Developer")
+    response = table.get_item(
+        Key={
+            'code': id
+        }
+    )
+    
+    myTuple= ("manager assigned bug to ",str(developer)," for development")
+    lastAction=""
+    data = response['Item']
+    
+    data['manager'] = " "
+    data['developer'] = developer
+    data['lastUpdatedDate']= str(datetime.datetime.now().date())
+    data['lastUpdatedBy']= "manager"
+    data['lastAction']= lastAction.join(myTuple)
+    data['status']= "issue"
 
-        table.put_item(Item = data)
-        return 0
-    except: 
-        return -1
+    table.put_item(Item = data)
+    return 0

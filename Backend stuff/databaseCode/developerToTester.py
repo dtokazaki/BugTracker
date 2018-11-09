@@ -4,34 +4,30 @@ from boto3.dynamodb.conditions import Key
 import datetime
 
 
-def developerToTester(event,context):
+def assignToDeveloper(event,context):
     dynamodb = resource('dynamodb')
     table = dynamodb.Table('bugTracker')
     
     id = event['id']
-    developer=event['developer']
-    text=event['text']
+    developer = event['developer']
     
-    try:
-        response = table.get_item(
-            Key={
-                'code': id
-            }
-        )
     
-        data = response['Item']
-        if data['tester'] == " ":
-            return -2
-        myTuple= (str(developer)," Solution Complete and sent to ", str(data['tester']))
-        lastAction=""
-            
-        data['developerDescription']= text
-        data['lastUpdatedDate']= str(datetime.datetime.now().date())
-        data['lastUpdatedBy']= developer
-        data['lastAction']= lastAction.join(myTuple)
-        data['status']= "testing"
+    response = table.get_item(
+        Key={
+            'code': id
+        }
+    )
+    
+    myTuple= ("manager assigned bug to ",str(developer)," for development")
+    lastAction=""
+    data = response['Item']
+    
+    data['manager'] = " "
+    data['developer'] = developer
+    data['lastUpdatedDate']= str(datetime.datetime.now().date())
+    data['lastUpdatedBy']= "manager"
+    data['lastAction']= lastAction.join(myTuple)
+    data['status']= "issue"
 
-        table.put_item(Item = data)
-        return 0
-    except: 
-        return -1
+    table.put_item(Item = data)
+    return 0

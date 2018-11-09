@@ -11,26 +11,23 @@ def developerUnresolved(event,context):
     id = event['id']
     developer = event['developer']
     
-    try:
-        response = table.get_item(
-            Key={
-                'code': id
-            }
-        )
+    response = table.get_item(
+        Key={
+            'code': id
+        }
+    )
     
-        myTuple= (developer, "marked bug unresolved: No Further action will be taken")
-        lastAction=""
-        data = response['Item']
+    myTuple= (developer, "marked bug unresolved: No Further action will be taken")
+    lastAction=""
+    data = response['Item']
         
-        data['developer']=""
-        data['tester']=""
-        data['manager']=""
-        data['lastUpdatedDate']= str(datetime.datetime.now().date()
-        data['lastUpdatedBy']= developer
-        data['lastAction']= lastAction.join(myTuple)
-        data['status']= "unresolved"
+    data['developer']=" "
+    data['tester']=" "
+    data['manager']=" "
+    data['lastUpdatedDate']= str(datetime.datetime.now().date()
+    data['lastUpdatedBy']= developer
+    data['lastAction']= lastAction.join(myTuple)
+    data['status']= "unresolved"
 
-        table.put_item(Item = data)
-        return 0
-    except: 
-        return -1
+    table.put_item(Item = data)
+    return 0

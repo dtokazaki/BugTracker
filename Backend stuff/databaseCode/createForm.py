@@ -5,7 +5,7 @@ import uuid
 import datetime
 import json
 
-# Create God account
+# Create Form
 def createForm(event,context):
     # Create a DynamoDB resource
     dynamodb = boto3.resource('dynamodb')
@@ -22,14 +22,15 @@ def createForm(event,context):
     data['details']=details
     data['testerDescription'] = " "
     data['devDescription']=" "
-    data["status"]="testing"
+    data["status"]="reported"
     data['dateCreated'] = str(datetime.datetime.now().date())
     data['lastUpdatedDay']= " "
     data['lastUpdatedBy'] = " "        
     data['tester']=" "
     data['developer']=" "
     data['manager']=" "
-    data['lastAction']= str("Bug Reported")
+    data['lastAction']= "Bug Reported"
+    data['severity']= " "
         
         
     table.put_item(Item= data)

@@ -22,3 +22,4 @@ def getManager(event,context):
     data= man + report
         
     return data
+    
