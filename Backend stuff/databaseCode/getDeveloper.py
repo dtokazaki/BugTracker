@@ -9,11 +9,16 @@ def getDeveloper(event,context):
     developer = event['developer']
     
     response = table.query(
-        IndexName='developer-index',
-        KeyConditionExpression=Key('developer').eq(developer)
+        IndexName='status-index',
+        KeyConditionExpression=Key('developer').eq("issue")
     )
         
-    data = response['Items']
+    allDevs = response['Items']
+    data=[]
+    
+    for dev in allDevs:
+        if dev['developer']==developer:
+            data.append(dev)
         
     return data
     
