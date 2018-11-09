@@ -6,12 +6,19 @@ def getManager(event,context):
     dynamodb = resource('dynamodb')
     table = dynamodb.Table('bugTracker')
     
-    response = table.query(
+    response1 = table.query(
         IndexName='manager-index',
         KeyConditionExpression=Key('manager').eq("manager")
     )
+    
+    response2 = table.query(
+        IndexName='status-index',
+        KeyConditionExpression=Key("status").eq("reported")
+    )
         
-    data = response['Items']
+    man = response1['Items']
+    report= response2['Items']
+    
+    data= man + report
         
     return data
-    
