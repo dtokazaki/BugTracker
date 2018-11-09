@@ -10,9 +10,9 @@
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <meta content="utf-8" http-equiv="encoding">
 </head>
-<body>
+<body style="margin:25">
 	<a href = "table.html">
-        <button type="button" class="btn btn-default ">Table</button></a>    
+		<button type="button" class="btn btn-default ">Table</button></a>    
 	<a href = "dynamoForm.html">
 	  <button type="button" class="btn btn-default">Home</button></a>
   <div class="btn-group" role="group" aria-label="...">
@@ -20,14 +20,18 @@
 	  <a href="developer.html" class="btn btn-default disabled">Developer</a>
 	  <a href="manager.html" class="btn btn-default">Manager</a>
   </div>
+  <br>
+  <br>
 <script type="text/javascript">
-
+// LOCAL DATABASE:
 // AWS.config.update({
 //   region: "us-west-2",
 //   endpoint: 'http://localhost:8000',
 //   accessKeyId: "fakeMyKeyId",
 //   secretAccessKey: "fakeSecretAccessKey"
 // });
+
+// NON-LOCAL DATABASE:
 AWS.config.update({
   region: "us-west-2",
  });
@@ -45,75 +49,75 @@ var dynamodb = new AWS.DynamoDB();
 var docClient = new AWS.DynamoDB.DocumentClient();
 
 function updateItem(bugID,decision,tname) {
-    var table = tname;
-    var id = bugID;
-  	var dec = decision;
+	var table = tname;
+	var id = bugID;
+	var dec = decision;
 
-    var params = {
-        TableName:table,
-        Key:{
-            "id": parseInt(id)
-        },
-        UpdateExpression: "set stage = :s",
-        ExpressionAttributeValues:{
-            ":s": dec
-        },
-        ReturnValues:"UPDATED_NEW"
-    };
+	var params = {
+		TableName:table,
+		Key:{
+			"id": parseInt(id)
+		},
+		UpdateExpression: "set stage = :s",
+		ExpressionAttributeValues:{
+			":s": dec
+		},
+		ReturnValues:"UPDATED_NEW"
+	};
 
-    docClient.update(params, function(err, data) {
-        if (err) {
-            //document.getElementById('textarea').innerHTML = "Unable to update item: " + "\n" + JSON.stringify(err, undefined, 2);
-        } else {
-            //document.getElementById('textarea').innerHTML = "UpdateItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-        }
-    });
+	docClient.update(params, function(err, data) {
+		if (err) {
+			//document.getElementById('textarea').innerHTML = "Unable to update item: " + "\n" + JSON.stringify(err, undefined, 2);
+		} else {
+			//document.getElementById('textarea').innerHTML = "UpdateItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+		}
+	});
 }
 function updateBug(bugID,decision) {
-    var id = bugID;
-  	var dec = decision;
+	var id = bugID;
+	var dec = decision;
 	updateItem(bugID,decision,"Bugs");
-    if (dec=="give up") {
-        deleteItem(bugID,"Developers");
-    	deleteItem(bugID,"Managers");
-    }
-    else {
-    	updateItem(bugID,decision,"Managers");
-        var getParams = {
-            TableName : "Bugs",
-            Key : {
-                "id": parseInt(id)
-            }
-        };
-        docClient.get(getParams,function(err,data) {
-            if(err) {
-                //document.getElementById('textarea').innerHTML = "Unable to read item: " + "\n" + JSON.stringify(err, undefined, 2);
+	if (dec=="give up") {
+		deleteItem(bugID,"Developers");
+		deleteItem(bugID,"Managers");
+	}
+	else {
+		updateItem(bugID,decision,"Managers");
+		var getParams = {
+			TableName : "Bugs",
+			Key : {
+				"id": parseInt(id)
+			}
+		};
+		docClient.get(getParams,function(err,data) {
+			if(err) {
+				//document.getElementById('textarea').innerHTML = "Unable to read item: " + "\n" + JSON.stringify(err, undefined, 2);
 
-            } else {
-            	table = "Testers"
-                var newParams = {
-                    TableName : table,
-                    Item : {
+			} else {
+				table = "Testers"
+				var newParams = {
+					TableName : table,
+					Item : {
 						"id" : data.Item.id,
 						"descr": data.Item.descr["S"],
 						"doing": data.Item.doing["S"],
 						"dev": data.Item.dev,
 						"stage": "testing"
 					}
-                }
-                docClient.put(newParams, function(err, data) {
-                    if (err) {
-                        //document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
-                    } else {
-                        //document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-                    }
-                });
-            }
-        });
+				}
+				docClient.put(newParams, function(err, data) {
+					if (err) {
+						//document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
+					} else {
+						//document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+					}
+				});
+			}
+		});
 
-        deleteItem(bugID,"Developers");
-        
-    }
+		deleteItem(bugID,"Developers");
+		
+	}
 }
 function deleteItem(bugID,tname) {
 	var id = bugID;
@@ -132,28 +136,40 @@ function deleteItem(bugID,tname) {
 		}
 	});
 }
-function devData() {
-	var params = {
-		TableName: "Developers",
-		ProjectionExpression: "#ids, descr, doing, dev, stage",
-		FilterExpression: "#ids BETWEEN :start_id AND :end_id",
-		ConsistentRead: true,
-		ExpressionAttributeNames: {
-			"#ids": "id"
-		},
-		ExpressionAttributeValues: {
-			":start_id": 1000,
-			":end_id": 10000
-		}
-	};
+function devData(dev) {
+	var data = "developer="+"developer1";
+	// var params = {
+	// 	TableName: "Developers",
+	// 	ProjectionExpression: "#ids, descr, doing, dev, stage",
+	// 	FilterExpression: "#ids BETWEEN :start_id AND :end_id",
+	// 	ConsistentRead: true,
+	// 	ExpressionAttributeNames: {
+	// 		"#ids": "id"
+	// 	},
+	// 	ExpressionAttributeValues: {
+	// 		":start_id": 1000,
+	// 		":end_id": 10000
+	// 	}
+	// };
 
-	docClient.scan(params, onScan);
-	var elmnts = new Array();
-	var count = 0;
-	function onScan(err, data) {
-		if (err) {
-			//document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
-		} else {
+	//docClient.scan(params, onScan);
+	// var elmnts = new Array();
+	// var count = 0;
+	// function onScan(err, data) {
+	// 	if (err) {
+	// 		//document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
+	// 	} else {
+	$.ajax({
+		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getDeveloper",
+		data: data,
+		type: "GET",
+		//headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader('x-api-key', 'JzYRhBdiPk4CewLHnGBJXaJq3Pr6OSx9au6aH90i');
+		},
+	   success: function (data) {
+			//alert("Success!" + JSON.stringify(data))
+			console.log(data);
 			var myTableDiv = document.getElementById("testTable");
 			var body = document.body;
 			var tbl = document.createElement('table');
@@ -185,52 +201,52 @@ function devData() {
 			td6.style.border = '2px solid black';
 			var i = 0;
 
-			data.Items.forEach(function(bug) {
+			data.forEach(function(bug) {
 				console.log(bug);
-				var id = bug.id;
+				var id = bug['code'];
 
 				//id
 				var tr = tbl.insertRow();
 				i++;
 				var td1 = tr.insertCell();
-				td1.appendChild(document.createTextNode(bug.id));
+				td1.appendChild(document.createTextNode(bug['code']));
 				td1.style.border = '1px solid black';
 
 				//description
 				var td2 = tr.insertCell();
-				if(bug.descr["S"]==undefined) td2.appendChild(document.createTextNode(bug.descr));
-				else td2.appendChild(document.createTextNode(bug.descr["S"]));
+				td2.appendChild(document.createTextNode(bug['description']));
 				td2.style.border = '1px solid black';
 
 				//what client was doing
 				var td3 = tr.insertCell();
-				if(bug.doing["S"]==undefined) td3.appendChild(document.createTextNode(bug.doing));
-				else td3.appendChild(document.createTextNode(bug.doing["S"]));
+				td3.appendChild(document.createTextNode(bug['details']));
 				td3.style.border = '1px solid black';
 				
 				//dev name
 				var td4 = tr.insertCell();
-				var devName = bug.dev;
+				var devName = bug['developer'];
 				td4.appendChild(document.createTextNode(devName));
 				td4.style.border = '1px solid black';
 				
 				//status
 				var td5 = tr.insertCell();
-				td5.appendChild(document.createTextNode(bug.stage));
+				td5.appendChild(document.createTextNode(bug['status']));
 				td5.style.border = '1px solid black';
 				
-				//tester's choice
+				//developer's choice
 				var td6 = tr.insertCell();
 				var button1 = document.createElement('button');
 				button1.addEventListener('click', function() {
-					updateBug(bug.id,"testing");
+					//developer to tester
+					//updateBug(bug.id,"testing");
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
 					i--;
 				});
 				button1.innerHTML = "Send to testing";
 				var button2 = document.createElement('button');
 				button2.addEventListener('click', function() {
-					updateBug(bug.id,"give up");
+					//developer unresolved
+					//updateBug(bug.id,"give up");
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
 					i--;
 				});
@@ -241,11 +257,11 @@ function devData() {
 			}); 
 			body.appendChild(tbl);
 		}
-	}
+	})
 
 }
 
-devData();
+devData("developer1");
 </script>
 
 

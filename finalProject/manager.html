@@ -10,7 +10,7 @@
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <meta content="utf-8" http-equiv="encoding">
 </head>
-<body>
+<body style="margin:25">
 	<a href = "table.html">
         <button type="button" class="btn btn-default ">Table</button></a>    
 	<a href = "dynamoForm.html">
@@ -20,29 +20,33 @@
 	  <a href="developer.html" class="btn btn-default">Developer</a>
 	  <a href="manager.html" class="btn btn-default disabled">Manager</a>
   </div>
+  <br>
+  <br>
 <script type="text/javascript">
-
+// LOCAL DATABASE:
 // AWS.config.update({
 //   region: "us-west-2",
 //   endpoint: 'http://localhost:8000',
 //   accessKeyId: "fakeMyKeyId",
 //   secretAccessKey: "fakeSecretAccessKey"
 // });
-AWS.config.update({
-  region: "us-west-2",
- });
 
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-	IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
-	RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
-});
-AWS.config.credentials.get(function(){
-	var accessKeyId = AWS.config.credentials.accessKeyId;
-	var secretAccessKey = AWS.config.credentials.secretAccessKey;
-});
+// NON-LOCAL DATABASE:
+// AWS.config.update({
+//   region: "us-west-2",
+//  });
 
-var dynamodb = new AWS.DynamoDB();
-var docClient = new AWS.DynamoDB.DocumentClient();
+// AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+// 	IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
+// 	RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
+// });
+// AWS.config.credentials.get(function(){
+// 	var accessKeyId = AWS.config.credentials.accessKeyId;
+// 	var secretAccessKey = AWS.config.credentials.secretAccessKey;
+// });
+
+// var dynamodb = new AWS.DynamoDB();
+// var docClient = new AWS.DynamoDB.DocumentClient();
 
 function updateItem(bugID, dname, tname) {
     var table = tname;
@@ -101,28 +105,41 @@ function updateItem(bugID, dname, tname) {
 }
 
 function managerData() {
-	var params = {
-		TableName: "Managers",
-		ProjectionExpression: "#ids, descr, doing, dev, stage",
-		FilterExpression: "#ids BETWEEN :start_id AND :end_id",
-		ConsistentRead: true,
-		ExpressionAttributeNames: {
-			"#ids": "id"
-		},
-		ExpressionAttributeValues: {
-			":start_id": 1000,
-			":end_id": 10000
-		}
-	};
+	// var params = {
+	// 	TableName: "Managers",
+	// 	ProjectionExpression: "#ids, descr, doing, dev, stage",
+	// 	FilterExpression: "#ids BETWEEN :start_id AND :end_id",
+	// 	ConsistentRead: true,
+	// 	ExpressionAttributeNames: {
+	// 		"#ids": "id"
+	// 	},
+	// 	ExpressionAttributeValues: {
+	// 		":start_id": 1000,
+	// 		":end_id": 10000
+	// 	}
+	// };
 
-	docClient.scan(params, onScan);
-	var elmnts = new Array();
-	var count = 0;
-	function onScan(err, data) {
-		if (err) {
-			//document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
-		} else {
-			var devNameList = ["Developer A","Developer B","Developer C","Developer D"];
+	// docClient.scan(params, onScan);
+	// var elmnts = new Array();
+	// var count = 0;
+	// function onScan(err, data) {
+	// 	if (err) {
+	// 		//document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
+	// 	} else {
+		var data = "manager="+"manager1";
+		$.ajax({
+               url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getManager",
+               data: data,
+               type: "GET",
+               //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
+               beforeSend: function(xhr) {
+                    xhr.setRequestHeader('x-api-key', 'NyIwQLLyus97qJRhul7Zw7iMZlliEkC33OGoC3HS');
+               },
+               success: function (data) {
+                    //alert("Success!" + JSON.stringify(data))
+                    console.log(data);
+                    var testNameList = ["Tester1","Tester2"];
+			var devNameList = ["Developer1","Developer2","Developer3"];
 			var body = document.body;
 			var tbl = document.createElement('table');
 			tbl.style.width  = '800';
@@ -150,74 +167,86 @@ function managerData() {
 			td5.style.border = '2px solid black';
 			
 			var td6 = tr.insertCell();
-			td6.style.border = '2px solid black';
+			td6.style.border = '2px solid white';
 			var i = 0;
 
-			data.Items.forEach(function(bug) {
-				var id = bug.id;
+			data.forEach(function(bug) {
+				var id = bug['code'];
 
 				//id
 				var tr = tbl.insertRow();
 				i++;
 				var td1 = tr.insertCell();
-				td1.appendChild(document.createTextNode(bug.id));
+				td1.appendChild(document.createTextNode(bug['code']));
 				td1.style.border = '1px solid black';
 
 				//description
 				var td2 = tr.insertCell();
-				if(bug.descr["S"]==undefined) td2.appendChild(document.createTextNode(bug.descr));
-				else td2.appendChild(document.createTextNode(bug.descr["S"]));
+				td2.appendChild(document.createTextNode(bug['description']));
 				td2.style.border = '1px solid black';
 
 				//what client was doing
 				var td3 = tr.insertCell();
-				if(bug.doing["S"]==undefined) td3.appendChild(document.createTextNode(bug.doing));
-				else td3.appendChild(document.createTextNode(bug.doing["S"]));
+				td3.appendChild(document.createTextNode(bug['details']));;
 				td3.style.border = '1px solid black';
 				
 				//dev name
 				var td4 = tr.insertCell();
-				var devName = bug.dev;
+				var devName = bug['developer'];
 				if(devName==" ") devName = "not assigned";
 				td4.appendChild(document.createTextNode(devName));
 				td4.style.border = '1px solid black';
 				
 				//status
 				var td5 = tr.insertCell();
-				td5.appendChild(document.createTextNode(bug.stage));
+				td5.appendChild(document.createTextNode(bug['status']));
 				td5.style.border = '1px solid black';
 				
 				//manager's choice
 				var td6 = tr.insertCell();
+
 				var div1 = document.createElement('div');
 				div1.setAttribute("class","btn-group");
 				var button = document.createElement('button');
 				var devChosen = true;
 				button.setAttribute("data-toggle","dropdown");
 				button.setAttribute("class","btn btn-default dropdown-toggle");
-				button.innerHTML = "Choose a dev";
-				if(bug.dev==" ") devChosen = false;
-				if(devChosen) {
-					button.setAttribute("class","btn btn-default dropdown-toggle disabled");
-					button.innerHTML = bug.dev;
-				}
+				button.style.width="120px";
 				var div2 = document.createElement('div');
 				div2.setAttribute("class","dropdown-menu");
-
-				var i;
-				for (i=0; i < devNameList.length; i++) {
-					var name = devNameList[i];
+				div2.style.minWidth="20px";
+				div2.style.minHeight="20px";
+				div2.style.textAlign="center";
+				var who;
+				if(bug['tester']==" ") {
+					button.innerHTML = "Choose tester";
+					var list = testNameList;
+					who = "tester";
+				}
+				else if(bug['developer']==" ") {
+					button.innerHTML = "Choose dev";
+					var list = devNameList;
+					who = "developer";
+				}
+				for (var i=0; i < list.length; i++) {
+					var name = list[i];
 					var devA = document.createElement('button');
+					devA.setAttribute("id","choice"+i);
+					devA.style.width='100px';
 					devA.innerHTML = name;
 					devA.setAttribute("class","dropdown-item");
 					devA.addEventListener('click', function() {
 						var chosenName = this.innerHTML;
-						updateItem(bug.id, chosenName,"Managers");
-						updateItem(bug.id, chosenName,"Bugs");
-
-						this.parentNode.parentNode.children[1].innerHTML = chosenName;
-						this.parentNode.parentNode.children[1].setAttribute("class","btn btn-default dropdown-toggle disabled");
-						td4.innerHTML = chosenName;
+						console.log(chosenName);
+						tbl.deleteRow(this.parentNode.parentNode.parentNode.parentNode.rowIndex);
+						if(who=="tester") {
+							//assignToTest(bug['code'],chosenName)
+							//assign to tester
+						}
+						else if(who=="developer") {
+							//assign to developer
+							assignToDev(bug['code'],chosenName)
+						}
 					});
 					div2.appendChild(devA);
 					div1.appendChild(div2);
@@ -226,12 +255,34 @@ function managerData() {
 				
 				td6.appendChild(div1);
 
-				td6.style.border = '1px solid black';
+				td6.style.border = '1px solid white';
 			}); 
 			body.appendChild(tbl);
 		}
-	}
+	})
 
+}
+function assingToTest(bugID,testName) {
+
+}
+function assignToDev(bugID,devName) {
+	var data = {"developer":devName,"id":bugID};
+    //var data = "developer="+devName + "manager="+" " + "id="+bugID;
+
+	$.ajax({
+               url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/assignToDeveloper",
+               data: data,
+               type: "GET",
+               //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
+               beforeSend: function(xhr) {
+                    xhr.setRequestHeader('x-api-key', 'K4cb4rI8Gq1LPzZFE4UXa3tTO3uA8JtO98CIayhI');
+                    alert(JSON.stringify(data))
+               },
+               success: function (data) {
+                    alert("Success!" + JSON.stringify(data))
+                    console.log(data);
+               }
+        })
 }
 
 managerData();
