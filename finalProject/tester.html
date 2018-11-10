@@ -63,28 +63,22 @@ function testerData(tester) {
 			td3.style.border = '2px solid black';
 			
 			var td4 = tr.insertCell();
-			td4.appendChild(document.createTextNode("Developer"));
+			td4.appendChild(document.createTextNode("Severity"));
 			td4.style.border = '2px solid black';
-			
+
 			var td5 = tr.insertCell();
-			td5.appendChild(document.createTextNode("Status"));
+			td5.appendChild(document.createTextNode("More detail"));
 			td5.style.border = '2px solid black';
-			
+
+
 			var td6 = tr.insertCell();
-			td6.appendChild(document.createTextNode("Severity"));
 			td6.style.border = '2px solid black';
 
-			var td7 = tr.insertCell();
-			td7.style.border = '2px solid black';
-
-			var i = 0;
-		
 			data.forEach(function(bug) {
 				var id = bug['id'];
 
 				//id
 				var tr = tbl.insertRow();
-				i++;
 				var td1 = tr.insertCell();
 				td1.appendChild(document.createTextNode(bug['code']));
 				td1.style.border = '1px solid black';
@@ -99,21 +93,11 @@ function testerData(tester) {
 				td3.appendChild(document.createTextNode(bug['details']));
 				td3.style.border = '1px solid black';
 				
-				//dev name
-				var td4 = tr.insertCell();
-				var devName = bug['developer'];
-				if(devName==" ") devName = "not assigned";
-				td4.appendChild(document.createTextNode(devName));
-				td4.style.border = '1px solid black';
 				
-				//status
-				var td5 = tr.insertCell();
-				td5.appendChild(document.createTextNode(bug['status']));
-				td5.style.border = '1px solid black';
 				
 				//tester's choice
 				//severity level
-				var td6 = tr.insertCell();
+				var td4 = tr.insertCell();
 				var div1 = document.createElement('div');
 				div1.setAttribute("class","btn-group");
 				var button = document.createElement('button');
@@ -139,43 +123,85 @@ function testerData(tester) {
 					var sevChosen = bug['severity'];
 					sevButton.addEventListener('click', function() {
 						sevChosen = this.innerHTML;
-						td6.children[0].children[1].innerHTML = sevChosen;
+						td4.children[0].children[1].innerHTML = sevChosen;
 					});
 					div2.appendChild(sevButton);
 					div1.appendChild(div2);
 				}
 				div1.appendChild(button);				
-				td6.appendChild(div1);
-				td6.style.border = '1px solid black';
-				td6.style.textAlign = "center";
+				td4.appendChild(div1);
+				td4.style.border = '1px solid black';
+				td4.style.textAlign = "center";
+
+				//look at devDetails and add testDetails
+				var td5 = tr.insertCell();
+				var expandButton = document.createElement('button');
+				expandButton.innerHTML = "expand";
+				var exp = expandButton.innerHTML;
+				var newTestDescription = bug['testerDescription'];
+				if(newTestDescription==" ") newTestDescription = "No description yet.";
+				var tr2, tdDev, tdTest, testText;
+				expandButton.addEventListener('click',function() {
+					if(exp=="expand") {
+						tr2 = tbl.insertRow(this.parentNode.parentNode.rowIndex+1);
+						tdDev = tr2.insertCell();
+						tdDev.innerHTML = bug['devDescription'];
+						tdDev.colSpan = "2";
+						tdTest = tr2.insertCell();
+						testText = document.createElement('textarea');
+						testText.innerHTML = newTestDescription;
+						tdTest.colSpan = "4";
+						testText.style.width = "100%";
+						tdTest.appendChild(testText);
+						exp = "collapse";
+						expandButton.innerHTML = exp;
+					}
+					else if(exp=="collapse") {
+						newTestDescription = testText.value;
+						tbl.deleteRow(this.parentNode.parentNode.rowIndex+1);
+						exp = "expand";
+						expandButton.innerHTML = exp;
+					}
+
+				});
+				td5.appendChild(expandButton);
+				td5.style.border = '1px solid black';
+				td5.style.textAlign = "center";
 
 				// if bug was fixed or not
-				var td7 = tr.insertCell();
+				var td6 = tr.insertCell();
 				var button1 = document.createElement('button');
 				button1.addEventListener('click', function() {
+					if(exp=="collapse") {
+						newTestDescription = testText.value;
+						tbl.deleteRow(this.parentNode.parentNode.rowIndex+1);
+					}
+					console.log(newTestDescription);
 					// tester to manager/developer
 					if(bug['developer']==" ") {
-						toManager(bug['code'],bug['tester'],sevChosen);
+						toManager(bug['code'],bug['tester'],sevChosen,newTestDescription);
 					}
 					else {
-						toDev(bug['code'],bug['tester'],sevChosen);
+						toDev(bug['code'],bug['tester'],sevChosen,newTestDescription);
 					}
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
-					//i--;
 				});
 				button1.innerHTML = "issue";
 				var button2 = document.createElement('button');
 				button2.addEventListener('click', function() {
 					//bug is fixed
-					fixed(bug['code'],bug['tester']);
+					if(exp=="collapse") {
+						newTestDescription = testText.value;
+						tbl.deleteRow(this.parentNode.parentNode.rowIndex+1);
+					}
+					fixed(bug['code'],bug['tester'],newTestDescription);
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
-					//i--;
 				});
 				button2.innerHTML = "fixed";
-				td7.appendChild(button1);
-				td7.appendChild(button2);
-				td7.style.border = '1px solid black';
-				td7.style.textAlign = "center";
+				td6.appendChild(button1);
+				td6.appendChild(button2);
+				td6.style.border = '1px solid black';
+				td6.style.textAlign = "center";
 			}); 
 			body.appendChild(tbl);
 		}
@@ -183,13 +209,13 @@ function testerData(tester) {
 	})
 
 }
-function toManager(bugID,testerName,sevLevel) {
+function toManager(bugID,testerName,sevLevel,txt) {
 	console.log(bugID);
 	console.log(testerName);
 	if(sevLevel==" ") sevLevel = "minor";
 
 	console.log(sevLevel);
-	var data = "tester="+testerName + "&id="+bugID+"&text="+"text"+"&severity="+sevLevel;
+	var data = "tester="+testerName + "&id="+bugID+"&text="+txt+"&severity="+sevLevel;
 	$.ajax({
 			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/testerToManager",
 			   data: data,
@@ -203,8 +229,8 @@ function toManager(bugID,testerName,sevLevel) {
 			   }
 		})
 }
-function toDev(bugID,testerName,sevLevel) {
-	var data = "text="+"text" + "&tester="+testerName + "&id="+bugID + "&severity=" + sevLevel;
+function toDev(bugID,testerName,sevLevel,txt) {
+	var data = "text="+txt + "&tester="+testerName + "&id="+bugID + "&severity=" + sevLevel;
 	console.log(data);
 	$.ajax({
 			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/testerToDeveloper",
@@ -220,8 +246,8 @@ function toDev(bugID,testerName,sevLevel) {
 			   }
 		})
 }
-function fixed(bugID,testerName) {
-	var data = "text=" + "text" + "&tester="+testerName + "&id="+bugID;
+function fixed(bugID,testerName,txt) {
+	var data = "text=" + txt + "&tester="+testerName + "&id="+bugID;
 	$.ajax({
 			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/testerComplete",
 			   data: data,
