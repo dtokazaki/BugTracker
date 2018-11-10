@@ -260,14 +260,16 @@ function testerData(tester) {
 					sevButton.style.width='80px';
 					sevButton.innerHTML = level;
 					sevButton.setAttribute("class","dropdown-item");
+					var sevChosen = " ";
 					sevButton.addEventListener('click', function() {
 						var chosenLevel = this.innerHTML;
+						sevChosen = this.innerHTML;
 						// assign to developer
 
 						//updateItem(bug.id, chosenName,"Managers");
 						//updateItem(bug.id, chosenName,"Bugs");
 
-						this.parentNode.parentNode.children[1].innerHTML = chosenLevel;
+						td6.children[0].children[1].innerHTML = chosenLevel;
 						//this.parentNode.parentNode.children[1].setAttribute("class","btn btn-default dropdown-toggle disabled");
 						//td4.innerHTML = chosenLevel;
 					});
@@ -278,10 +280,15 @@ function testerData(tester) {
 				td6.appendChild(div1);
 				td6.style.border = '1px solid black';
 				td6.style.textAlign = "center";
-
 				var td7 = tr.insertCell();
 				var button1 = document.createElement('button');
 				button1.addEventListener('click', function() {
+					if(bug['developer']==" ") {
+						toManager(bug['code'],bug['tester'],sevChosen);
+					}
+					else {
+						toDev(bug['code'],bug['tester']);
+					}
 					// tester to manager
 					// if assigned tester to developer
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
@@ -291,6 +298,7 @@ function testerData(tester) {
 				var button2 = document.createElement('button');
 				button2.addEventListener('click', function() {
 					//tester fixed
+					fixed(bug['code'],bug['tester']);
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
 					i--;
 				});
@@ -306,7 +314,64 @@ function testerData(tester) {
 	})
 
 }
+function toManager(bugID,testerName,sevLevel) {
+	console.log(bugID);
+	console.log(testerName);
+	if(sevLevel==" ") sevLevel = "minor";
 
+	console.log(sevLevel);
+	var data = "tester="+testerName + "&id="+bugID+"&text="+" "+"&severity="+sevLevel;
+	$.ajax({
+			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/testerToManager",
+			   data: data,
+			   type: "GET",
+			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
+			   beforeSend: function(xhr) {
+			       xhr.setRequestHeader('x-api-key', 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSi');
+					console.log(JSON.stringify(data))
+			   },
+			   success: function (data) {
+			   		console.log(data);
+					alert("Success!" + JSON.stringify(data))
+					console.log(data);
+			   }
+		})
+}
+function toDev(bugID,testerName) {
+	var data = "text="+"text" + "&tester="+testerName + "&id="+bugID;
+	$.ajax({
+			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/testerToDeveloper",
+			   data: data,
+			   type: "GET",
+			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
+			   beforeSend: function(xhr) {
+			       xhr.setRequestHeader('x-api-key', 'mw5D4ewYzn8ncrowOC2wA3GFyRvIfLbr3VPWZ5PY');
+					console.log(JSON.stringify(data))
+			   },
+			   success: function (data) {
+			   		console.log(data);
+					alert("Success!" + JSON.stringify(data))
+					console.log(data);
+			   }
+		})
+}
+function fixed(bugID,testerName) {
+	var data = "text=" + "text" + "&tester="+testerName + "&id="+bugID;
+	$.ajax({
+			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/testerComplete",
+			   data: data,
+			   type: "GET",
+			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
+			   beforeSend: function(xhr) {
+			       xhr.setRequestHeader('x-api-key', 'JA3fTWr53X9BCGO4FjtjU8sLLdG96dFN13eFEem1');
+					console.log(JSON.stringify(data))
+			   },
+			   success: function (data) {
+					alert("Success!" + JSON.stringify(data));
+					console.log(JSON.stringify(data));
+			   }
+		})
+}
 testerData("tester");
 </script>
 

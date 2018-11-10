@@ -239,6 +239,7 @@ function devData(dev) {
 				button1.addEventListener('click', function() {
 					//developer to tester
 					//updateBug(bug.id,"testing");
+					toTest(bug['code'],bug['developer']);
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
 					i--;
 				});
@@ -247,6 +248,7 @@ function devData(dev) {
 				button2.addEventListener('click', function() {
 					//developer unresolved
 					//updateBug(bug.id,"give up");
+					unresolved(bug['code'],bug['developer']);
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
 					i--;
 				});
@@ -261,6 +263,40 @@ function devData(dev) {
 
 }
 
+function toTest(bugID,devName) {
+	var data = "text=" + "text" + "&developer="+devName + "&id="+bugID;
+	$.ajax({
+			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/developerToTester",
+			   data: data,
+			   type: "GET",
+			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
+			   beforeSend: function(xhr) {
+			       xhr.setRequestHeader('x-api-key', 'loGBGfW6Jx7nQrl4QOdF41uE1EG6zjK03yoTSEZX');
+					console.log(JSON.stringify(data))
+			   },
+			   success: function (data) {
+					alert("Success!" + JSON.stringify(data))
+					console.log(data);
+			   }
+		})
+}
+function unresolved(bugID,devName) {
+	var data = "developer="+devName + "&id="+bugID;
+	$.ajax({
+			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/developerUnresolved",
+			   data: data,
+			   type: "GET",
+			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
+			   beforeSend: function(xhr) {
+			       xhr.setRequestHeader('x-api-key', '6Tn41vnLQ77wFuGgRRx5J3tgRE153n2e2axBQNqZ');
+					console.log(JSON.stringify(data))
+			   },
+			   success: function (data) {
+					alert("Success!" + JSON.stringify(data))
+					console.log(data);
+			   }
+		})
+} 
 devData("Developer3");
 </script>
 
