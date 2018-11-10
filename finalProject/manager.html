@@ -23,30 +23,6 @@
   <br>
   <br>
 <script type="text/javascript">
-// LOCAL DATABASE:
-// AWS.config.update({
-//   region: "us-west-2",
-//   endpoint: 'http://localhost:8000',
-//   accessKeyId: "fakeMyKeyId",
-//   secretAccessKey: "fakeSecretAccessKey"
-// });
-
-// NON-LOCAL DATABASE:
-// AWS.config.update({
-//   region: "us-west-2",
-//  });
-
-// AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-// 	IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
-// 	RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
-// });
-// AWS.config.credentials.get(function(){
-// 	var accessKeyId = AWS.config.credentials.accessKeyId;
-// 	var secretAccessKey = AWS.config.credentials.secretAccessKey;
-// });
-
-// var dynamodb = new AWS.DynamoDB();
-// var docClient = new AWS.DynamoDB.DocumentClient();
 
 function managerData() {
 	var data = "manager="+"manager1";
@@ -54,12 +30,10 @@ function managerData() {
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getManager",
 		data: data,
 		type: "GET",
-		//headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader('x-api-key', 'NyIwQLLyus97qJRhul7Zw7iMZlliEkC33OGoC3HS');
 		},
 	   success: function (data) {
-			//alert("Success!" + JSON.stringify(data))
 			console.log(data);
 			var testNameList = ["Tester1","Tester2","tester"];
 			var devNameList = ["Developer1","Developer2","Developer3"];
@@ -192,15 +166,12 @@ function assignToTest(bugID,testName) {
 			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/assignTester",
 			   data: data,
 			   type: "GET",
-			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
 			   beforeSend: function(xhr) {
 			       xhr.setRequestHeader('x-api-key', 'PSd1T6KWhr4p0W3Cszms84qP9sByP57H9kO5GGGG');
 					console.log(JSON.stringify(data))
 			   },
 			   success: function (data) {
 			   		console.log(data);
-					alert("Success!" + JSON.stringify(data))
-					console.log(data);
 			   }
 		})
 }
@@ -211,13 +182,10 @@ function assignToDev(bugID,devName) {
 			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/assignToDeveloper",
 			   data: data,
 			   type: "GET",
-			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
 			   beforeSend: function(xhr) {
 					xhr.setRequestHeader('x-api-key', 'K4cb4rI8Gq1LPzZFE4UXa3tTO3uA8JtO98CIayhI');
-					alert(JSON.stringify(data))
 			   },
 			   success: function (data) {
-					alert("Success!" + JSON.stringify(data))
 					console.log(data);
 			   }
 		})

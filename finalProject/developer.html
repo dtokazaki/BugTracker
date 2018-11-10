@@ -22,154 +22,23 @@
   </div>
   <br>
   <br>
+  <p id="devName"> </p>
 <script type="text/javascript">
-// LOCAL DATABASE:
-// AWS.config.update({
-//   region: "us-west-2",
-//   endpoint: 'http://localhost:8000',
-//   accessKeyId: "fakeMyKeyId",
-//   secretAccessKey: "fakeSecretAccessKey"
-// });
 
-// NON-LOCAL DATABASE:
-AWS.config.update({
-  region: "us-west-2",
- });
-
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-	IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
-	RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
-});
-AWS.config.credentials.get(function(){
-	var accessKeyId = AWS.config.credentials.accessKeyId;
-	var secretAccessKey = AWS.config.credentials.secretAccessKey;
-});
-
-var dynamodb = new AWS.DynamoDB();
-var docClient = new AWS.DynamoDB.DocumentClient();
-
-function updateItem(bugID,decision,tname) {
-	var table = tname;
-	var id = bugID;
-	var dec = decision;
-
-	var params = {
-		TableName:table,
-		Key:{
-			"id": parseInt(id)
-		},
-		UpdateExpression: "set stage = :s",
-		ExpressionAttributeValues:{
-			":s": dec
-		},
-		ReturnValues:"UPDATED_NEW"
-	};
-
-	docClient.update(params, function(err, data) {
-		if (err) {
-			//document.getElementById('textarea').innerHTML = "Unable to update item: " + "\n" + JSON.stringify(err, undefined, 2);
-		} else {
-			//document.getElementById('textarea').innerHTML = "UpdateItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-		}
-	});
-}
-function updateBug(bugID,decision) {
-	var id = bugID;
-	var dec = decision;
-	updateItem(bugID,decision,"Bugs");
-	if (dec=="give up") {
-		deleteItem(bugID,"Developers");
-		deleteItem(bugID,"Managers");
-	}
-	else {
-		updateItem(bugID,decision,"Managers");
-		var getParams = {
-			TableName : "Bugs",
-			Key : {
-				"id": parseInt(id)
-			}
-		};
-		docClient.get(getParams,function(err,data) {
-			if(err) {
-				//document.getElementById('textarea').innerHTML = "Unable to read item: " + "\n" + JSON.stringify(err, undefined, 2);
-
-			} else {
-				table = "Testers"
-				var newParams = {
-					TableName : table,
-					Item : {
-						"id" : data.Item.id,
-						"descr": data.Item.descr["S"],
-						"doing": data.Item.doing["S"],
-						"dev": data.Item.dev,
-						"stage": "testing"
-					}
-				}
-				docClient.put(newParams, function(err, data) {
-					if (err) {
-						//document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
-					} else {
-						//document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-					}
-				});
-			}
-		});
-
-		deleteItem(bugID,"Developers");
-		
-	}
-}
-function deleteItem(bugID,tname) {
-	var id = bugID;
-	var table = tname;
-	var params = {
-		TableName:table,
-		Key:{
-			"id":parseInt(id)
-		}
-	};
-	docClient.delete(params, function(err, data) {
-		if (err) {
-			//document.getElementById('textarea').innerHTML = "Unable to delete item: " + "\n" + JSON.stringify(err, undefined, 2);
-		} else {
-			//document.getElementById('textarea').innerHTML = "DeleteItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-		}
-	});
-}
 function devData(dev) {
 	var data = "developer="+dev;
-	// var params = {
-	// 	TableName: "Developers",
-	// 	ProjectionExpression: "#ids, descr, doing, dev, stage",
-	// 	FilterExpression: "#ids BETWEEN :start_id AND :end_id",
-	// 	ConsistentRead: true,
-	// 	ExpressionAttributeNames: {
-	// 		"#ids": "id"
-	// 	},
-	// 	ExpressionAttributeValues: {
-	// 		":start_id": 1000,
-	// 		":end_id": 10000
-	// 	}
-	// };
-
-	//docClient.scan(params, onScan);
-	// var elmnts = new Array();
-	// var count = 0;
-	// function onScan(err, data) {
-	// 	if (err) {
-	// 		//document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
-	// 	} else {
+	document.getElementById("devName").innerHTML = dev;
 	$.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getDeveloper",
 		data: data,
 		type: "GET",
-		//headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader('x-api-key', 'JzYRhBdiPk4CewLHnGBJXaJq3Pr6OSx9au6aH90i');
 		},
 	   success: function (data) {
-			//alert("Success!" + JSON.stringify(data))
 			console.log(data);
+			var severityLevel = ["blocker","critical","major","minor","cosmetic"];
+			
 			var myTableDiv = document.getElementById("testTable");
 			var body = document.body;
 			var tbl = document.createElement('table');
@@ -190,7 +59,7 @@ function devData(dev) {
 			td3.style.border = '2px solid black';
 			
 			var td4 = tr.insertCell();
-			td4.appendChild(document.createTextNode("Developer"));
+			td4.appendChild(document.createTextNode("Severity"));
 			td4.style.border = '2px solid black';
 			
 			var td5 = tr.insertCell();
@@ -222,11 +91,42 @@ function devData(dev) {
 				td3.appendChild(document.createTextNode(bug['details']));
 				td3.style.border = '1px solid black';
 				
-				//dev name
+				//severity level
 				var td4 = tr.insertCell();
-				var devName = bug['developer'];
-				td4.appendChild(document.createTextNode(devName));
+				var div1 = document.createElement('div');
+				div1.setAttribute("class","btn-group");
+				var button = document.createElement('button');
+				var sevChosen = true;
+				button.setAttribute("data-toggle","dropdown");
+				button.setAttribute("class","btn btn-default dropdown-toggle");
+				if(bug['severity']==" ") sevChosen = false;
+				if(sevChosen) button.innerHTML = bug['severity'];
+				else button.innerHTML = "Severity";
+				var div2 = document.createElement('div');
+				div2.setAttribute("class","dropdown-menu");
+				div2.style.minWidth="80px";
+				div2.style.minHeight="100px";
+				div2.style.textAlign="center";
+				var i;
+				for (i=0; i < severityLevel.length; i++) {
+					var level = severityLevel[i];
+					var sevButton = document.createElement('button');
+					sevButton.style.padding='3px 3px';
+					sevButton.style.width='80px';
+					sevButton.innerHTML = level;
+					sevButton.setAttribute("class","dropdown-item");
+					var sevChosen = bug['severity'];
+					sevButton.addEventListener('click', function() {
+						sevChosen = this.innerHTML;
+						td4.children[0].children[1].innerHTML = sevChosen;
+					});
+					div2.appendChild(sevButton);
+					div1.appendChild(div2);
+				}
+				div1.appendChild(button);				
+				td4.appendChild(div1);
 				td4.style.border = '1px solid black';
+				td4.style.textAlign = "center";
 				
 				//status
 				var td5 = tr.insertCell();
@@ -239,7 +139,7 @@ function devData(dev) {
 				button1.addEventListener('click', function() {
 					//developer to tester
 					//updateBug(bug.id,"testing");
-					toTest(bug['code'],bug['developer']);
+					toTest(bug['code'],bug['developer'],sevChosen);
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
 					i--;
 				});
@@ -248,7 +148,7 @@ function devData(dev) {
 				button2.addEventListener('click', function() {
 					//developer unresolved
 					//updateBug(bug.id,"give up");
-					unresolved(bug['code'],bug['developer']);
+					unresolved(bug['code'],bug['developer'],sevChosen);
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
 					i--;
 				});
@@ -263,20 +163,18 @@ function devData(dev) {
 
 }
 
-function toTest(bugID,devName) {
-	var data = "text=" + "text" + "&developer="+devName + "&id="+bugID;
+function toTest(bugID,devName,severity) {
+	var data = "text=" + "text" + "&developer="+devName + "&id="+bugID + "&severity="+severity;
 	$.ajax({
 			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/developerToTester",
 			   data: data,
 			   type: "GET",
-			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
 			   beforeSend: function(xhr) {
 			       xhr.setRequestHeader('x-api-key', 'loGBGfW6Jx7nQrl4QOdF41uE1EG6zjK03yoTSEZX');
 					console.log(JSON.stringify(data))
 			   },
 			   success: function (data) {
-					alert("Success!" + JSON.stringify(data))
-					console.log(data);
+					console.log(data);	
 			   }
 		})
 }
@@ -286,13 +184,11 @@ function unresolved(bugID,devName) {
 			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/developerUnresolved",
 			   data: data,
 			   type: "GET",
-			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
 			   beforeSend: function(xhr) {
 			       xhr.setRequestHeader('x-api-key', '6Tn41vnLQ77wFuGgRRx5J3tgRE153n2e2axBQNqZ');
 					console.log(JSON.stringify(data))
 			   },
 			   success: function (data) {
-					alert("Success!" + JSON.stringify(data))
 					console.log(data);
 			   }
 		})

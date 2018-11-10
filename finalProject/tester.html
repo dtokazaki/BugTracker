@@ -22,133 +22,13 @@
   </div>
   <br>
   <br>
+  <p id="testerName"> </p>
 <script type="text/javascript">
-// LOCAL DATABASE:
-// AWS.config.update({
-//   region: "us-west-2",
-//   endpoint: 'http://localhost:8000',
-//   accessKeyId: "fakeMyKeyId",
-//   secretAccessKey: "fakeSecretAccessKey"
-// });
 
-// NON-LOCAL DATABASE:
-// AWS.config.update({
-//   region: "us-west-2",
-//  });
-
-// AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-// 	IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
-// 	RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
-// });
-// AWS.config.credentials.get(function(){
-// 	var accessKeyId = AWS.config.credentials.accessKeyId;
-// 	var secretAccessKey = AWS.config.credentials.secretAccessKey;
-// });
-
-// var dynamodb = new AWS.DynamoDB();
-// var docClient = new AWS.DynamoDB.DocumentClient();
-
-function updateItem(bugID,dev,decision,table) {
-	var y = decision;
-	var id = bugID;
-	var devName = dev;
-	if(devName==" " && decision=="fixed") y = "nonissue";
-
-	var params = {
-		TableName:table,
-		Key:{
-			"id": parseInt(id)
-		},
-		UpdateExpression: "set stage = :s",
-		ExpressionAttributeValues:{
-			":s": y
-		},
-		ReturnValues:"UPDATED_NEW"
-	};
-
-	docClient.update(params, function(err, data) {
-		if (err) {
-			//document.getElementById('textarea').innerHTML = "Unable to update item: " + "\n" + JSON.stringify(err, undefined, 2);
-		} else {
-			//document.getElementById('textarea').innerHTML = "UpdateItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-		}
-	});
-}
-function updateBug(bugID,dev,decision) {
-	var y = decision;
-	var id = bugID;
-	var devName = dev;
-	updateItem(bugID,dev,decision,"Bugs");
-	if (y=="nonissue") {
-		deleteItem(id,"Testers");
-	}
-	else if (y=="fixed") {
-		deleteItem(id,"Testers");
-		deleteItem(id,"Managers");
-	}
-	else{
-		var getParams = {
-			TableName : "Bugs",
-			Key : {
-				"id": parseInt(id)
-			}
-		};
-		docClient.get(getParams,function(err,data) {
-			if(err) {
-				//document.getElementById('textarea').innerHTML = "Unable to read item: " + "\n" + JSON.stringify(err, undefined, 2);
-
-			} else {
-				if(data.Item.dev==" ") table = "Managers";
-				else {
-					table = "Developers"
-					updateItem(bugID,dev,decision,"Managers");
-				}
-				console.log(data.Item);
-				var newParams = {
-					TableName : table,
-					Item : {
-						"id" : data.Item.id,
-						"descr": data.Item.descr["S"],
-						"doing": data.Item.doing["S"],
-						"dev": data.Item.dev,
-						"stage": "issue"
-					}
-				}
-				docClient.put(newParams, function(err, data) {
-					if (err) {
-						//document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
-					} else {
-						//document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-					}
-				});
-			}
-		});
-		deleteItem(id,"Testers");
-		
-	}
-}
-
-function deleteItem(bugID,tname) {
-	var id = bugID;
-	var table = tname;
-	var params = {
-		TableName:table,
-		Key:{
-			"id":parseInt(id)
-		}
-	};
-	docClient.delete(params, function(err, data) {
-		if (err) {
-			//document.getElementById('textarea').innerHTML = "Unable to delete item: " + "\n" + JSON.stringify(err, undefined, 2);
-		} else {
-			//document.getElementById('textarea').innerHTML = "DeleteItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-		}
-	});
-}
 function testerData(tester) {
 	
 	 var data = "tester="+ tester;
-	 
+	 document.getElementById("testerName").innerHTML = tester;
 	 $.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getTester",
 		data: data,
@@ -158,7 +38,6 @@ function testerData(tester) {
 			xhr.setRequestHeader('x-api-key', 'NZLlovyCrO83qyPR4IXNl7ARqF9nLaFn2EZp7AlL');
 		},
 		success: function (data) {
-			//alert("Success!" + JSON.stringify(data))
 			console.log(data); 
 
 			var severityLevel = ["blocker","critical","major","minor","cosmetic"];
@@ -233,6 +112,7 @@ function testerData(tester) {
 				td5.style.border = '1px solid black';
 				
 				//tester's choice
+				//severity level
 				var td6 = tr.insertCell();
 				var div1 = document.createElement('div');
 				div1.setAttribute("class","btn-group");
@@ -243,10 +123,6 @@ function testerData(tester) {
 				if(bug['severity']==" ") sevChosen = false;
 				if(sevChosen) button.innerHTML = bug['severity'];
 				else button.innerHTML = "Severity";
-				/*if(devChosen) {
-					button.setAttribute("class","btn btn-default dropdown-toggle disabled");
-					button.innerHTML = bug['developer'];
-				}*/
 				var div2 = document.createElement('div');
 				div2.setAttribute("class","dropdown-menu");
 				div2.style.minWidth="80px";
@@ -260,18 +136,10 @@ function testerData(tester) {
 					sevButton.style.width='80px';
 					sevButton.innerHTML = level;
 					sevButton.setAttribute("class","dropdown-item");
-					var sevChosen = " ";
+					var sevChosen = bug['severity'];
 					sevButton.addEventListener('click', function() {
-						var chosenLevel = this.innerHTML;
 						sevChosen = this.innerHTML;
-						// assign to developer
-
-						//updateItem(bug.id, chosenName,"Managers");
-						//updateItem(bug.id, chosenName,"Bugs");
-
-						td6.children[0].children[1].innerHTML = chosenLevel;
-						//this.parentNode.parentNode.children[1].setAttribute("class","btn btn-default dropdown-toggle disabled");
-						//td4.innerHTML = chosenLevel;
+						td6.children[0].children[1].innerHTML = sevChosen;
 					});
 					div2.appendChild(sevButton);
 					div1.appendChild(div2);
@@ -280,27 +148,28 @@ function testerData(tester) {
 				td6.appendChild(div1);
 				td6.style.border = '1px solid black';
 				td6.style.textAlign = "center";
+
+				// if bug was fixed or not
 				var td7 = tr.insertCell();
 				var button1 = document.createElement('button');
 				button1.addEventListener('click', function() {
+					// tester to manager/developer
 					if(bug['developer']==" ") {
 						toManager(bug['code'],bug['tester'],sevChosen);
 					}
 					else {
-						toDev(bug['code'],bug['tester']);
+						toDev(bug['code'],bug['tester'],sevChosen);
 					}
-					// tester to manager
-					// if assigned tester to developer
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
-					i--;
+					//i--;
 				});
 				button1.innerHTML = "issue";
 				var button2 = document.createElement('button');
 				button2.addEventListener('click', function() {
-					//tester fixed
+					//bug is fixed
 					fixed(bug['code'],bug['tester']);
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
-					i--;
+					//i--;
 				});
 				button2.innerHTML = "fixed";
 				td7.appendChild(button1);
@@ -320,37 +189,33 @@ function toManager(bugID,testerName,sevLevel) {
 	if(sevLevel==" ") sevLevel = "minor";
 
 	console.log(sevLevel);
-	var data = "tester="+testerName + "&id="+bugID+"&text="+" "+"&severity="+sevLevel;
+	var data = "tester="+testerName + "&id="+bugID+"&text="+"text"+"&severity="+sevLevel;
 	$.ajax({
 			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/testerToManager",
 			   data: data,
 			   type: "GET",
-			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
 			   beforeSend: function(xhr) {
-			       xhr.setRequestHeader('x-api-key', 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSi');
+			       xhr.setRequestHeader('x-api-key', 'sB1chnnvqY9FVwI8zDYSv9wG2vIJf79A7P9QQ0KN');
 					console.log(JSON.stringify(data))
 			   },
 			   success: function (data) {
-			   		console.log(data);
-					alert("Success!" + JSON.stringify(data))
 					console.log(data);
 			   }
 		})
 }
-function toDev(bugID,testerName) {
-	var data = "text="+"text" + "&tester="+testerName + "&id="+bugID;
+function toDev(bugID,testerName,sevLevel) {
+	var data = "text="+"text" + "&tester="+testerName + "&id="+bugID + "&severity=" + sevLevel;
+	console.log(data);
 	$.ajax({
 			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/testerToDeveloper",
 			   data: data,
 			   type: "GET",
-			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
 			   beforeSend: function(xhr) {
 			       xhr.setRequestHeader('x-api-key', 'mw5D4ewYzn8ncrowOC2wA3GFyRvIfLbr3VPWZ5PY');
 					console.log(JSON.stringify(data))
 			   },
 			   success: function (data) {
 			   		console.log(data);
-					alert("Success!" + JSON.stringify(data))
 					console.log(data);
 			   }
 		})
@@ -361,13 +226,11 @@ function fixed(bugID,testerName) {
 			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/testerComplete",
 			   data: data,
 			   type: "GET",
-			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
 			   beforeSend: function(xhr) {
 			       xhr.setRequestHeader('x-api-key', 'JA3fTWr53X9BCGO4FjtjU8sLLdG96dFN13eFEem1');
 					console.log(JSON.stringify(data))
 			   },
 			   success: function (data) {
-					alert("Success!" + JSON.stringify(data));
 					console.log(JSON.stringify(data));
 			   }
 		})
