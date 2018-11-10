@@ -23,7 +23,7 @@ def assignTester(event,context):
                 
     data['tester'] = tester
     data['lastUpdatedDate']= str(datetime.datetime.now().date())
-    data['lastUpdatedBy']= manager
+    data['lastUpdatedBy']= "manager"
     data['lastAction']= lastAction.join(myTuple)
     data['status']= "testing"
 

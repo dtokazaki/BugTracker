@@ -80,7 +80,7 @@ id:
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 assignTester():
-APIKey:	wODlTOiDwYy0wij4GC3e6dV2WGiYDOk3UCk5niQ3
+APIKey:	PSd1T6KWhr4p0W3Cszms84qP9sByP57H9kO5GGGG
 Method: GET
 
 tester: tester
