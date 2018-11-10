@@ -1,9 +1,3 @@
-import boto3
-from boto3 import resource
-from boto3.dynamodb.conditions import Key
-import datetime
-
-
 def testerToDeveloper(event,context):
     dynamodb = resource('dynamodb')
     table = dynamodb.Table('bugTracker')
@@ -11,6 +5,7 @@ def testerToDeveloper(event,context):
     id = event['id']
     tester = event['tester']
     text=event['text']
+    severity= event['severity']
     
     
     response = table.get_item(
@@ -23,11 +18,11 @@ def testerToDeveloper(event,context):
     data = response['Item']
         
     myTuple= ("Solution incomplete or incorrect. Sent back to ",str(data['developer']))
-
-            
+    
+    data['severity']=severity
     data['testerDescription']= text        
     data['lastUpdatedDate']= str(datetime.datetime.now().date())
-    data['lastUpdatedBy']= str(data['tester'])
+    data['lastUpdatedBy']= data['tester']
     data['lastAction']= lastAction.join(myTuple)
     data['status']= "issue"
 

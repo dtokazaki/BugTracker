@@ -11,6 +11,7 @@ def developerToTester(event,context):
     id = event['id']
     developer=event['developer']
     text=event['text']
+    severity=event['severity']
     
     response = table.get_item(
         Key={
@@ -22,7 +23,8 @@ def developerToTester(event,context):
     
     myTuple= (str(developer)," Solution Complete and sent to ", str(data['tester']))
     lastAction=""
-            
+    
+    data['severity']=severity        
     data['developerDescription']= text
     data['lastUpdatedDate']= str(datetime.datetime.now().date())
     data['lastUpdatedBy']= developer
@@ -31,4 +33,3 @@ def developerToTester(event,context):
 
     table.put_item(Item = data)
     return 0
-    
