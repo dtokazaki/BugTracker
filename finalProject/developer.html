@@ -42,7 +42,7 @@ function devData(dev) {
 			var myTableDiv = document.getElementById("testTable");
 			var body = document.body;
 			var tbl = document.createElement('table');
-			tbl.style.width  = '800';
+			tbl.style.width  = '900';
 			tbl.style.border = '1px solid black';
 			var tr = tbl.insertRow();
 			
@@ -63,7 +63,7 @@ function devData(dev) {
 			td4.style.border = '2px solid black';
 			
 			var td5 = tr.insertCell();
-			td5.appendChild(document.createTextNode("Status"));
+			td5.appendChild(document.createTextNode("More detail"));
 			td5.style.border = '2px solid black';
 			
 			var td6 = tr.insertCell();
@@ -128,10 +128,40 @@ function devData(dev) {
 				td4.style.border = '1px solid black';
 				td4.style.textAlign = "center";
 				
-				//status
+				//look at devDetails and add testDetails
 				var td5 = tr.insertCell();
-				td5.appendChild(document.createTextNode(bug['status']));
+				var expandButton = document.createElement('button');
+				expandButton.innerHTML = "expand";
+				var exp = expandButton.innerHTML;
+				var newDevDescription = bug['developerDescription'];
+				if(newDevDescription==" ") newDevDescription = "No description yet.";
+				var tr2, tdDev, tdTest, devText;
+				expandButton.addEventListener('click',function() {
+					if(exp=="expand") {
+						tr2 = tbl.insertRow(this.parentNode.parentNode.rowIndex+1);
+						tdTest = tr2.insertCell();
+						tdTest.innerHTML = bug['testerDescription'];
+						tdTest.colSpan = "2";
+						tdDev = tr2.insertCell();
+						devText = document.createElement('textarea');
+						devText.innerHTML = newDevDescription;
+						tdDev.colSpan = "4";
+						devText.style.width = "100%";
+						tdDev.appendChild(devText);
+						exp = "collapse";
+						expandButton.innerHTML = exp;
+					}
+					else if(exp=="collapse") {
+						newDevDescription = devText.value;
+						tbl.deleteRow(this.parentNode.parentNode.rowIndex+1);
+						exp = "expand";
+						expandButton.innerHTML = exp;
+					}
+
+				});
+				td5.appendChild(expandButton);
 				td5.style.border = '1px solid black';
+				td5.style.textAlign = "center";
 				
 				//developer's choice
 				var td6 = tr.insertCell();
@@ -139,7 +169,11 @@ function devData(dev) {
 				button1.addEventListener('click', function() {
 					//developer to tester
 					//updateBug(bug.id,"testing");
-					toTest(bug['code'],bug['developer'],sevChosen);
+					if(exp=="collapse") {
+						newDevDescription = devText.value;
+						tbl.deleteRow(this.parentNode.parentNode.rowIndex+1);
+					}
+					toTest(bug['code'],bug['developer'],sevChosen,newDevDescription);
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
 					i--;
 				});
@@ -147,8 +181,7 @@ function devData(dev) {
 				var button2 = document.createElement('button');
 				button2.addEventListener('click', function() {
 					//developer unresolved
-					//updateBug(bug.id,"give up");
-					unresolved(bug['code'],bug['developer'],sevChosen);
+					unresolved(bug['code'],bug['developer'],sevChosen,newDevDescription);
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
 					i--;
 				});
@@ -163,8 +196,8 @@ function devData(dev) {
 
 }
 
-function toTest(bugID,devName,severity) {
-	var data = "text=" + "text" + "&developer="+devName + "&id="+bugID + "&severity="+severity;
+function toTest(bugID,devName,severity,txt) {
+	var data = "text=" + txt + "&developer="+devName + "&id="+bugID + "&severity="+severity;
 	$.ajax({
 			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/developerToTester",
 			   data: data,
