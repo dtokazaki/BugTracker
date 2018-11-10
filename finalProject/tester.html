@@ -13,7 +13,7 @@
 <body style="margin:25">
 	<a href = "table.html">
         <button type="button" class="btn btn-default ">Table</button></a>    
-	<a href = "dynamoForm.html">
+	<a href = "index.html">
 	  <button type="button" class="btn btn-default">Home</button></a>
   <div class="btn-group" role="group" aria-label="...">
 	  <a href = "tester.html" class="btn btn-default disabled">Tester</a>
@@ -145,10 +145,17 @@ function testerData(tester) {
 					if(exp=="expand") {
 						tr2 = tbl.insertRow(this.parentNode.parentNode.rowIndex+1);
 						tdDev = tr2.insertCell();
-						tdDev.innerHTML = bug['devDescription'];
-						tdDev.colSpan = "2";
+						tdDev.innerHTML = "Dev description: " + bug['developerDescription'];
+						tdDev.style.verticalAlign = "top";
+						tdDev.colSpan = "1";
+						tdDev.style.border = '1px solid black';
+						var tdLabel = tr2.insertCell();
+						tdLabel.innerHTML = "Tester description:";
+						tdLabel.style.verticalAlign = "top";
 						tdTest = tr2.insertCell();
 						testText = document.createElement('textarea');
+						testText.style.border="none";
+						testText.style.padding="0";
 						testText.innerHTML = newTestDescription;
 						tdTest.colSpan = "4";
 						testText.style.width = "100%";
