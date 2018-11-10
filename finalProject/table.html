@@ -12,141 +12,30 @@
 </head>
 <body>
 
-<script type="text/javascript">
-
-// AWS.config.update({
-//   region: "us-west-2",
-//   endpoint: 'http://localhost:8000',
-//   accessKeyId: "fakeMyKeyId",
-//   secretAccessKey: "fakeSecretAccessKey"
-// });
-AWS.config.update({
-  region: "us-west-2",
- });
-
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-	IdentityPoolId: "us-west-2:8b603897-8374-45e1-80be-3f8781f822b9",
-	RoleArn: "arn:aws:iam::425648465739:role/Cognito_DynamoPoolUnauthorized"
-});
-AWS.config.credentials.get(function(){
-	var accessKeyId = AWS.config.credentials.accessKeyId;
-	var secretAccessKey = AWS.config.credentials.secretAccessKey;
-});
-
-
-var dynamodb = new AWS.DynamoDB();
-var docClient = new AWS.DynamoDB.DocumentClient();
-function createTable() {
-    table = document.getElementById("create").elements[0].value;
-    var params = {
-        TableName : table,
-        KeySchema: [
-            { AttributeName: "id", KeyType: "HASH"}
-        ],
-        AttributeDefinitions: [       
-            { AttributeName: "id", AttributeType: "N" }
-        ],
-        ProvisionedThroughput: {       
-            ReadCapacityUnits: 5,
-            WriteCapacityUnits: 5
-        }
-    };
-
-    dynamodb.createTable(params, function(err, data) {
-        if (err) {
-            document.getElementById('textarea').innerHTML = "Unable to create table: " + "\n" + JSON.stringify(err, undefined, 2);
-        } else {
-            document.getElementById('textarea').innerHTML = "Created table: " + "\n" + JSON.stringify(data, undefined, 2);
-        }
-    });
-}
-
-function deleteTable() {
-    table = document.getElementById("delete").elements[0].value;
-
-    var params = {
-        TableName : table
-    };
-
-    dynamodb.deleteTable(params, function(err, data) {
-        if (err) {
-            document.getElementById('textarea').innerHTML = "Unable to delete table: " + "\n" + JSON.stringify(err, undefined, 2);
-        } else {
-            document.getElementById('textarea').innerHTML = "Table deleted.";
-        }
-    });
-}
-
-function listTables() {
-    var params = {};
-    dynamodb.listTables(params, function(err, data) {
-    if (err){
-        document.getElementById('textarea').innerHTML = "Unable to list tables: " + "\n" + JSON.stringify(err, undefined, 2);
-    }
-    else{
-     document.getElementById('textarea').innerHTML = "List of tables: " + "\n" + JSON.stringify(data, undefined, 2);
-    }
-})
-}//
-</script>
-</head>
-
-<body>
+<body style="margin:25">
     <a href = "table.html">
         <button type="button" class="btn btn-default disabled">Table</button></a>
-    <a href = "dynamoForm.html">
+    <a href = "index.html">
         <button type="button" class="btn btn-default">Home</button></a>
     <div class="btn-group" role="group" aria-label="...">
         <a href = "tester.html" class="btn btn-default">Tester</a>
         <a href="developer.html" class="btn btn-default">Developer</a>
         <a href="manager.html" class="btn btn-default">Manager</a>
     </div>
-<p>Here you can create and delete tables, or list them to see which tables exist at any given moment.</p>
-<p>Keep in mind that everything will break if the tables named "Bugs" "Testers" "Developers" and "Managers" don't exist. This page will have trouble if Bugs in particular does not exist.</p>
-<form id="create">
-  <div>
-    <label for="tableID">Create "Bugs", "Testers", "Developers", or "Managers" here.</label>
-    <input type="text" class="form-control" id="bugID2" placeholder="Table name">
-  </div>
-  <input id="submit1" type="button" value="Create Table" onclick="createTable();" />
+<br>
+<br>
 
-</form>
-<form id="delete">
-  <div>
-    <label for="tableID">Delete "Bugs", "Testers", "Developers", or "Managers" here.</label>
-    <input type="text" class="form-control" id="bugID3" placeholder="Table name">
-  </div>
-  <input id="submit2" type="button" value="Delete Table" onclick="deleteTable();" />
-</form>
-<form id="list">
-    <div>
-        <label for "tableID">Click here to list all the tables that currently exist.</label>
-    </div>
-    <input id="submit3" type="button" value="List Tables" onclick="listTables();" />
-</form>
-<script>
+<script type="text/javascript">
 function bugData() {
-    var params = {
-        TableName: "Bugs",
-        ProjectionExpression: "#ids, descr, doing, dev, stage",
-        FilterExpression: "#ids BETWEEN :start_id AND :end_id",
-        ConsistentRead: true,
-        ExpressionAttributeNames: {
-            "#ids": "id"
+    var data;
+    $.ajax({
+        url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getAllForms",
+        data: data,
+        type: "GET",
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader('x-api-key', '8EWZgXbwTg3SMjstxbb61UOWCOoqM4W96BjZAFK8');
         },
-        ExpressionAttributeValues: {
-            ":start_id": 1000,
-            ":end_id": 10000
-        }
-    };
-
-    docClient.scan(params, onScan);
-    var elmnts = new Array();
-    var count = 0;
-    function onScan(err, data) {
-        if (err) {
-            //document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
-        } else {
+        success: function (data) {
             var myTableDiv = document.getElementById("testTable");
             var body = document.body;
             var tbl = document.createElement('table');
@@ -176,50 +65,47 @@ function bugData() {
             
             var i = 0;
 
-            data.Items.forEach(function(bug) {
-                var id = bug.id;
+            data.forEach(function(bug) {
+                var id = bug['code'];
 
                 //id
                 var tr = tbl.insertRow();
                 i++;
                 var td1 = tr.insertCell();
-                td1.appendChild(document.createTextNode(bug.id));
+                td1.appendChild(document.createTextNode(bug['code']));
                 td1.style.border = '1px solid black';
 
                 //description
                 var td2 = tr.insertCell();
-                if(bug.descr["S"]==undefined) td2.appendChild(document.createTextNode(bug.descr));
-                else td2.appendChild(document.createTextNode(bug.descr["S"]));
+                td2.appendChild(document.createTextNode(bug['description']));
                 td2.style.border = '1px solid black';
 
                 //what client was doing
                 var td3 = tr.insertCell();
-                if(bug.doing["S"]==undefined) td3.appendChild(document.createTextNode(bug.doing));
-                else td3.appendChild(document.createTextNode(bug.doing["S"]));
+                td3.appendChild(document.createTextNode(bug['details']));
                 td3.style.border = '1px solid black';
                 
                 //dev name
                 var td4 = tr.insertCell();
-                var devName = bug.dev;
+                var devName = bug['developer'];
                 if(devName==" ") devName = "not assigned";
                 td4.appendChild(document.createTextNode(devName));
                 td4.style.border = '1px solid black';
                 
                 //status
                 var td5 = tr.insertCell();
-                td5.appendChild(document.createTextNode(bug.stage));
+                td5.appendChild(document.createTextNode(bug['status']));
                 td5.style.border = '1px solid black';
                
             }); 
             body.appendChild(tbl);
         }
-    }
+    })
 
 }
 
 bugData();
 </script>
-<textarea readonly id= "textarea" style="width:400px; height:50px"></textarea>
 
 </body>
 </html>
