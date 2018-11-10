@@ -96,7 +96,18 @@ tester: tester
 id:
 text:
 
-example ID: da5bbd83ada649ab8e99a202b3b81ea5
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+getForm():
+APIKey: IRhxCk4NmV4mpQHK75NsL4GEqSocd4X56fFgX7BS
+Method: GET
+
+id:
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+getAllForms():
+APIKey: 8EWZgXbwTg3SMjstxbb61UOWCOoqM4W96BjZAFK8
+Method: GET
 
 
 
