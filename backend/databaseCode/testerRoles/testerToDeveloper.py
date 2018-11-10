@@ -25,7 +25,7 @@ def testerToDeveloper(event,context):
     myTuple= ("Solution incomplete or incorrect. Sent back to ",str(data['developer']))
 
             
-    data['testerDescription']= str(text)        
+    data['testerDescription']= text        
     data['lastUpdatedDate']= str(datetime.datetime.now().date())
     data['lastUpdatedBy']= str(data['tester'])
     data['lastAction']= lastAction.join(myTuple)
