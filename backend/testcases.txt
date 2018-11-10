@@ -7,7 +7,7 @@ details: I hope it works
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 testerToManager():
-APIKey: bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSi
+APIKey: sB1chnnvqY9FVwI8zDYSv9wG2vIJf79A7P9QQ0KN
 Method:GET
 
 tester: tester1

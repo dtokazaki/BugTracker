@@ -10,7 +10,6 @@ def testerComplete(event,context):
     
     id = event['id']
     tester = event['tester']
-    text = event['text']
     
     response = table.get_item(
         Key={
