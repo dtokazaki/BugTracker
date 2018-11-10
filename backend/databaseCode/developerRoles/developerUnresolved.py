@@ -17,7 +17,7 @@ def developerUnresolved(event,context):
         }
     )
     
-    myTuple= (developer, "marked bug unresolved: No Further action will be taken")
+    myTuple= (developer, " marked bug unresolved: No further action will be taken")
     lastAction=""
     data = response['Item']
         
