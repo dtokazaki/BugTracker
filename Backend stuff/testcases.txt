@@ -109,6 +109,14 @@ getAllForms():
 APIKey: 8EWZgXbwTg3SMjstxbb61UOWCOoqM4W96BjZAFK8
 Method: GET
 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+deleteFor():
+APIKey: bTBbDB7i5E1rIqIVXELMe6GPZ8hS4oaA5C1OOBK6
+Method: GET
+
+id:
+
+
 
 
 
