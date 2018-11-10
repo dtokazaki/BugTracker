@@ -12,7 +12,7 @@
 </head>
 <body style="margin:25">
 	<a href = "table.html">
-        <button type="button" class="btn btn-default ">Table</button></a>    
+		<button type="button" class="btn btn-default ">Table</button></a>    
 	<a href = "dynamoForm.html">
 	  <button type="button" class="btn btn-default">Home</button></a>
   <div class="btn-group" role="group" aria-label="...">
@@ -48,97 +48,20 @@
 // var dynamodb = new AWS.DynamoDB();
 // var docClient = new AWS.DynamoDB.DocumentClient();
 
-function updateItem(bugID, dname, tname) {
-    var table = tname;
-    var id = bugID;
-    var devName = dname;
-    var params = {
-        TableName:table,
-        Key:{
-            "id": parseInt(id)
-        },
-        UpdateExpression: "set dev = :d",
-        ExpressionAttributeValues:{
-            ":d": devName
-        },
-        ReturnValues:"UPDATED_NEW"
-    };
-
-    docClient.update(params, function(err, data) {
-        if (err) {
-            //document.getElementById('textarea').innerHTML = "Unable to update item: " + "\n" + JSON.stringify(err, undefined, 2);
-        } else {
-            //document.getElementById('textarea').innerHTML = "UpdateItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-        }
-    });
-    var getParams = {
-        TableName : "Bugs",
-        Key : {
-            "id": parseInt(id)
-        }
-    };
-    docClient.get(getParams,function(err,data) {
-        if(err) {
-            //document.getElementById('textarea').innerHTML = "Unable to read item: " + "\n" + JSON.stringify(err, undefined, 2);
-
-        } else {
-        	table = "Developers"
-            var newParams = {
-                TableName : table,
-                Item : {
-					"id" : data.Item.id,
-					"descr": data.Item.descr["S"],
-					"doing": data.Item.doing["S"],
-					"dev": devName,
-					"stage": data.Item.stage
-				}
-            }
-            docClient.put(newParams, function(err, data) {
-                if (err) {
-                    //document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
-                } else {
-                    //document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
-                }
-            });
-        }
-    });       
-}
-
 function managerData() {
-	// var params = {
-	// 	TableName: "Managers",
-	// 	ProjectionExpression: "#ids, descr, doing, dev, stage",
-	// 	FilterExpression: "#ids BETWEEN :start_id AND :end_id",
-	// 	ConsistentRead: true,
-	// 	ExpressionAttributeNames: {
-	// 		"#ids": "id"
-	// 	},
-	// 	ExpressionAttributeValues: {
-	// 		":start_id": 1000,
-	// 		":end_id": 10000
-	// 	}
-	// };
-
-	// docClient.scan(params, onScan);
-	// var elmnts = new Array();
-	// var count = 0;
-	// function onScan(err, data) {
-	// 	if (err) {
-	// 		//document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
-	// 	} else {
-		var data = "manager="+"manager1";
-		$.ajax({
-               url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getManager",
-               data: data,
-               type: "GET",
-               //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
-               beforeSend: function(xhr) {
-                    xhr.setRequestHeader('x-api-key', 'NyIwQLLyus97qJRhul7Zw7iMZlliEkC33OGoC3HS');
-               },
-               success: function (data) {
-                    //alert("Success!" + JSON.stringify(data))
-                    console.log(data);
-                    var testNameList = ["Tester1","Tester2"];
+	var data = "manager="+"manager1";
+	$.ajax({
+		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getManager",
+		data: data,
+		type: "GET",
+		//headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader('x-api-key', 'NyIwQLLyus97qJRhul7Zw7iMZlliEkC33OGoC3HS');
+		},
+	   success: function (data) {
+			//alert("Success!" + JSON.stringify(data))
+			console.log(data);
+			var testNameList = ["Tester1","Tester2","tester"];
 			var devNameList = ["Developer1","Developer2","Developer3"];
 			var body = document.body;
 			var tbl = document.createElement('table');
@@ -239,13 +162,14 @@ function managerData() {
 						var chosenName = this.innerHTML;
 						console.log(chosenName);
 						tbl.deleteRow(this.parentNode.parentNode.parentNode.parentNode.rowIndex);
+
 						if(who=="tester") {
-							//assignToTest(bug['code'],chosenName)
+							assignToTest(bug['code'],chosenName);
 							//assign to tester
 						}
 						else if(who=="developer") {
 							//assign to developer
-							assignToDev(bug['code'],chosenName)
+							assignToDev(bug['code'],chosenName);
 						}
 					});
 					div2.appendChild(devA);
@@ -262,27 +186,41 @@ function managerData() {
 	})
 
 }
-function assingToTest(bugID,testName) {
-
+function assignToTest(bugID,testName) {
+	var data = "tester="+testName + "&id="+bugID;
+	$.ajax({
+			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/assignTester",
+			   data: data,
+			   type: "GET",
+			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
+			   beforeSend: function(xhr) {
+					xhr.setRequestHeader('x-api-key', 'wODlTOiDwYy0wij4GC3e6dV2WGiYDOk3UCk5niQ3');
+					console.log(JSON.stringify(data))
+			   },
+			   success: function (data) {
+			   		console.log(data);
+					alert("Success!" + JSON.stringify(data))
+					console.log(data);
+			   }
+		})
 }
 function assignToDev(bugID,devName) {
-	var data = {"developer":devName,"id":bugID};
-    //var data = "developer="+devName + "manager="+" " + "id="+bugID;
+	var data = "developer="+devName  + "&id="+bugID;
 
 	$.ajax({
-               url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/assignToDeveloper",
-               data: data,
-               type: "GET",
-               //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
-               beforeSend: function(xhr) {
-                    xhr.setRequestHeader('x-api-key', 'K4cb4rI8Gq1LPzZFE4UXa3tTO3uA8JtO98CIayhI');
-                    alert(JSON.stringify(data))
-               },
-               success: function (data) {
-                    alert("Success!" + JSON.stringify(data))
-                    console.log(data);
-               }
-        })
+			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/assignToDeveloper",
+			   data: data,
+			   type: "GET",
+			   //headers: { 'x-api-key': 'bwscsSausc7Kzzb3RPrAD4Cmli36p56F5FBSiUYg' },
+			   beforeSend: function(xhr) {
+					xhr.setRequestHeader('x-api-key', 'K4cb4rI8Gq1LPzZFE4UXa3tTO3uA8JtO98CIayhI');
+					alert(JSON.stringify(data))
+			   },
+			   success: function (data) {
+					alert("Success!" + JSON.stringify(data))
+					console.log(data);
+			   }
+		})
 }
 
 managerData();
