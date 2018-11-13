@@ -28,7 +28,7 @@ function createItem() {
 			xhr.setRequestHeader('x-api-key', 'NZLlovyCrO83qyPR4IXNl7ARqF9nLaFn2EZp7AlL');
 		},
 		success: function (data) {
-			alert("Success!" + JSON.stringify(data))
+			// alert("Success!" + JSON.stringify(data))
 			document.getElementById("uniqueCode").innerHTML= "The unique code for the bug you found is " + JSON.stringify(data);
 		}
 
@@ -50,7 +50,7 @@ function readItem() {
 			xhr.setRequestHeader('x-api-key', 'NZLlovyCrO83qyPR4IXNl7ARqF9nLaFn2EZp7AlL');
 		},
 		success: function (data) {
-			alert("Success!" + JSON.stringify(data))
+			// :walert("Success!" + JSON.stringify(data))
 			document.getElementById("bugStatusID").innerHTML="Bug ID: " + data['code'];
 			document.getElementById("bugStatusDescr").innerHTML = "Description: " + data['description'];
 			document.getElementById("bugStatusDoing").innerHTML= "Details: " + data['details'];
