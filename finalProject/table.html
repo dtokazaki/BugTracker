@@ -39,7 +39,7 @@ function bugData() {
             var myTableDiv = document.getElementById("testTable");
             var body = document.body;
             var tbl = document.createElement('table');
-            tbl.style.width  = '800';
+            //tbl.style.width  = '800';
             tbl.style.border = '1px solid black';
             var tr = tbl.insertRow();
             
@@ -48,20 +48,32 @@ function bugData() {
             td1.style.border = '2px solid black';
             
             var td2 = tr.insertCell();
-            td2.appendChild(document.createTextNode("Description"));
+            td2.appendChild(document.createTextNode("Severity"));
             td2.style.border = '2px solid black';
             
             var td3 = tr.insertCell();
-            td3.appendChild(document.createTextNode("What you were doing"));
+            td3.appendChild(document.createTextNode("Status"));
             td3.style.border = '2px solid black';
             
             var td4 = tr.insertCell();
-            td4.appendChild(document.createTextNode("Developer"));
+            td4.appendChild(document.createTextNode("Description"));
             td4.style.border = '2px solid black';
             
             var td5 = tr.insertCell();
-            td5.appendChild(document.createTextNode("Status"));
+            td5.appendChild(document.createTextNode("Details"));
             td5.style.border = '2px solid black';
+
+            var td6 = tr.insertCell();
+            td6.appendChild(document.createTextNode("Tester"));
+            td6.style.border = '2px solid black';
+
+            var td7 = tr.insertCell();
+            td7.appendChild(document.createTextNode("Developer"));
+            td7.style.border = '2px solid black';
+
+            var td8 = tr.insertCell();
+            td8.appendChild(document.createTextNode("Date"));
+            td8.style.border = '2px solid black';
             
             var i = 0;
 
@@ -75,28 +87,45 @@ function bugData() {
                 td1.appendChild(document.createTextNode(bug['code']));
                 td1.style.border = '1px solid black';
 
-                //description
+                //severity
                 var td2 = tr.insertCell();
-                td2.appendChild(document.createTextNode(bug['description']));
+                td2.appendChild(document.createTextNode(bug['severity']));
                 td2.style.border = '1px solid black';
 
-                //what client was doing
-                var td3 = tr.insertCell();
-                td3.appendChild(document.createTextNode(bug['details']));
-                td3.style.border = '1px solid black';
-                
-                //dev name
-                var td4 = tr.insertCell();
-                var devName = bug['developer'];
-                if(devName==" ") devName = "not assigned";
-                td4.appendChild(document.createTextNode(devName));
-                td4.style.border = '1px solid black';
-                
                 //status
+                var td3 = tr.insertCell();
+                td3.appendChild(document.createTextNode(bug['status']));
+                td3.style.border = '1px solid black';
+
+                //description
+                var td4 = tr.insertCell();
+                td4.appendChild(document.createTextNode(bug['description']));
+                td4.style.border = '1px solid black';
+
+                //what client was doing
                 var td5 = tr.insertCell();
-                td5.appendChild(document.createTextNode(bug['status']));
+                td5.appendChild(document.createTextNode(bug['details']));
                 td5.style.border = '1px solid black';
+                
+                //tester name
+                var td7 = tr.insertCell();
+                var testName = bug['tester'];
+                //if(testName==" ") testName = "not assigned";
+                td7.appendChild(document.createTextNode(testName));
+                td7.style.border = '1px solid black';
+
+                //dev name
+                var td7 = tr.insertCell();
+                var devName = bug['developer'];
+                //if(devName==" ") devName = "not assigned";
+                td7.appendChild(document.createTextNode(devName));
+                td7.style.border = '1px solid black';
+                
                
+                //last updated date
+                var td8 = tr.insertCell();
+                td8.appendChild(document.createTextNode(bug['lastUpdatedDate']));
+                td8.style.border = '1px solid black';
             }); 
             body.appendChild(tbl);
         }

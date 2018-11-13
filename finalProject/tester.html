@@ -46,7 +46,7 @@ function testerData(tester) {
 			var body = document.body;
 			var tbl = document.createElement('table');
 
-			tbl.style.width  = '900';
+			//tbl.style.width  = '900';
 			tbl.style.border = '1px solid black';
 			var tr = tbl.insertRow();
 			
@@ -59,7 +59,7 @@ function testerData(tester) {
 			td2.style.border = '2px solid black';
 			
 			var td3 = tr.insertCell();
-			td3.appendChild(document.createTextNode("What you were doing"));
+			td3.appendChild(document.createTextNode("Details"));
 			td3.style.border = '2px solid black';
 			
 			var td4 = tr.insertCell();
@@ -73,6 +73,11 @@ function testerData(tester) {
 
 			var td6 = tr.insertCell();
 			td6.style.border = '2px solid black';
+
+
+			var td7 = tr.insertCell();
+			td7.appendChild(document.createTextNode("Date"));
+			td7.style.border = '2px solid black';
 
 			data.forEach(function(bug) {
 				var id = bug['id'];
@@ -147,18 +152,18 @@ function testerData(tester) {
 						tdDev = tr2.insertCell();
 						tdDev.innerHTML = "Dev description: " + bug['developerDescription'];
 						tdDev.style.verticalAlign = "top";
-						tdDev.colSpan = "1";
+						tdDev.colSpan = "2";
 						tdDev.style.border = '1px solid black';
 						var tdLabel = tr2.insertCell();
 						tdLabel.innerHTML = "Tester description:";
 						tdLabel.style.verticalAlign = "top";
 						tdTest = tr2.insertCell();
 						testText = document.createElement('textarea');
-						testText.style.border="none";
-						testText.style.padding="0";
 						testText.innerHTML = newTestDescription;
 						tdTest.colSpan = "4";
-						testText.style.width = "100%";
+						testText.style.width = "98%";
+						testText.style.height = "100%";
+						testText.style.margin="5";
 						tdTest.appendChild(testText);
 						exp = "collapse";
 						expandButton.innerHTML = exp;
@@ -209,8 +214,15 @@ function testerData(tester) {
 				td6.appendChild(button2);
 				td6.style.border = '1px solid black';
 				td6.style.textAlign = "center";
+
+				//last updated date
+				var td7 = tr.insertCell();
+				td7.appendChild(document.createTextNode(bug['lastUpdatedDate']));
+				td7.style.border = '1px solid black';
 			}); 
 			body.appendChild(tbl);
+
+
 		}
 
 	})
