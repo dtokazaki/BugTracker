@@ -22,8 +22,6 @@ def testerComplete(event,context):
     lastAction=""
     data = response['Item']
         
-    data['developer']=" "
-    data['tester']=" "
     data['manager']=" "
     data['lastUpdatedDate']= str(datetime.datetime.now().date())
     data['lastUpdatedBy']= tester

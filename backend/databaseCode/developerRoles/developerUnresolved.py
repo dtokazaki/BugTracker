@@ -20,14 +20,12 @@ def developerUnresolved(event,context):
     myTuple= (developer, " marked bug unresolved: No further action will be taken")
     lastAction=""
     data = response['Item']
-        
-    data['developer']=" "
-    data['tester']=" "
+       
     data['manager']=" "
-    data['lastUpdatedDate']= str(datetime.datetime.now().date()
+    data['lastUpdatedDate']= str(datetime.datetime.now().date())
     data['lastUpdatedBy']= developer
     data['lastAction']= lastAction.join(myTuple)
     data['status']= "unresolved"
-
+    
     table.put_item(Item = data)
     return 0
