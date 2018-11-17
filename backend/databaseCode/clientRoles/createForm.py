@@ -13,12 +13,14 @@ def createForm(event,context):
     
     description = event['description']
     details = event['details']
+    system=event['system']
     
     id = uuid.uuid4()
 
     data = {}
     data['code']= id.hex
     data['description'] = description
+    data['system']= system
     data['details']=details
     data['testerDescription'] = " "
     data['developerDescription']=" "
