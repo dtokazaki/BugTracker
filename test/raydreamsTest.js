@@ -106,7 +106,7 @@
 			    // foreach dropdown menu in the column
 				if (base.headers[col].drop != null && base.headers[col].drop.length > 0) {
 				    jQuery.each(base.headers[col].drop, function (idx, ic) {
-				        var colBtn = jQuery("<div class='container'> <div class='dropdown'> <button class='btn btn-primary dropdown-toggle' id='menu1' type='button' data-toggle='dropdown'>Dropdown Example <span class='caret'></span></button> <ul class='dropdown-menu' role='menu' aria-labelledby='menu1'> <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>HTML</a></li> <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>CSS</a></li> <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>JavaScript</a></li> <li role='presentation' class='divider'></li> <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>About Us</a></li> </ul> </div> </div>");
+				        var colBtn = jQuery("<div class='container'> <div class='dropdown'> <button class='btn btn-primary dropdown-toggle' id='menu1' type='button' data-toggle='dropdown'>Severity <span class='caret'></span></button> <ul class='dropdown-menu' role='menu' aria-labelledby='menu1'> <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>HTML</a></li> <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>CSS</a></li> <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>JavaScript</a></li> <li role='presentation' class='divider'></li> <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>About Us</a></li> </ul> </div> </div>");
                     
 				        $("dropdown-menu").css("margin", "0");
 				        $("divider").css("margin", "0");
