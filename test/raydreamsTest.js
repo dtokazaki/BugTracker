@@ -86,7 +86,7 @@
 					});
 				}
 
-			    // foreach icon in the column
+			    // foreach button in the column
 				if (base.headers[col].button != null && base.headers[col].button.length > 0) {
 				    jQuery.each(base.headers[col].button, function (idx, ic) {
 
@@ -98,6 +98,25 @@
 
 				        if (ic.data != null)
 				            colBtn.data('ray-data', data[row][ic.data]);
+
+				        cell.append(colBtn);
+				    });
+				}
+
+			    // foreach dropdown menu in the column
+				if (base.headers[col].drop != null && base.headers[col].drop.length > 0) {
+				    jQuery.each(base.headers[col].drop, function (idx, ic) {
+				        var colBtn = jQuery("<div class='container'> <div class='dropdown'> <button class='btn btn-primary dropdown-toggle' id='menu1' type='button' data-toggle='dropdown'>Dropdown Example <span class='caret'></span></button> <ul class='dropdown-menu' role='menu' aria-labelledby='menu1'> <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>HTML</a></li> <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>CSS</a></li> <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>JavaScript</a></li> <li role='presentation' class='divider'></li> <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>About Us</a></li> </ul> </div> </div>");
+                    
+				        $("dropdown-menu").css("margin", "0");
+				        $("divider").css("margin", "0");
+				        $("dropdown-menu").css("padding","0");
+
+				        //if (ic.handler != null)
+				        //    cell.on('click', null, { handler: ic.handler, data: { rowIdx: row, id: data[row][keyField] } }, doIconClick);
+
+				        //if (ic.data != null)
+				        //    button.data('ray-data', data[row][ic.data]);
 
 				        cell.append(colBtn);
 				    });
@@ -319,8 +338,8 @@
 	
 	// when a row is clicked on
 	function doRowClick(event) {
-		base.currentSelection = event.data;
-		base.onRowClick(event);
+		//base.currentSelection = event.data;
+		//base.onRowClick(event);
 	}
 
 	// sorts the bound data
@@ -376,6 +395,10 @@
 	// internal debug handler
 	function debug(event) {
 		alert('Debugging');
+	}
+
+	function severity() {
+	    document.getElementById("myDropdown").classList.toggle("show");
 	}
 
 }(jQuery));
