@@ -16,10 +16,14 @@
 function createItem() {
 	var x = document.getElementById("addBug");
 	
-	var des = x.elements[0].value;
-	var doi = x.elements[1].value;
-
-	var data = "description=" + des +"&details="+doi;
+	var sys = x.elements[0].value;
+	var des = x.elements[1].value;
+	var doi = x.elements[2].value;
+	console.log(sys);
+	console.log(des);
+	console.log(doi);
+	var data = "description=" + des +"&details="+doi + 
+		"&system="+sys ;
 	$.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/createForm",
 		data: data,
@@ -102,6 +106,15 @@ function login() {
 
 
   <form id="addBug">
+  	<div class="form-group">
+    <label for="exampleFormControlSelect1">System being used</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>CourseAvail</option>
+      <option>Camino</option>
+      <option>eCampus</option>
+    </select>
+  </div>
+
 	<div class="form-group">
 	<label for="description">Description of the bug:</label>
 	<textarea class="form-control" id="description" rows="3" placeholder="Description" type="text"></textarea>
