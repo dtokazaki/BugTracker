@@ -19,8 +19,8 @@ function createItem() {
 	var des = x.elements[0].value;
 	var doi = x.elements[1].value;
 
-    var data = "description=" + des +"&details="+doi;
- 	$.ajax({
+	var data = "description=" + des +"&details="+doi;
+	$.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/createForm",
 		data: data,
 		type: "GET",
@@ -28,12 +28,12 @@ function createItem() {
 			xhr.setRequestHeader('x-api-key', 'NZLlovyCrO83qyPR4IXNl7ARqF9nLaFn2EZp7AlL');
 		},
 		success: function (data) {
-			// alert("Success!" + JSON.stringify(data))
+			alert("Success!" + JSON.stringify(data))
 			document.getElementById("uniqueCode").innerHTML= "The unique code for the bug you found is " + JSON.stringify(data);
 		}
 
 	})
-	    
+		
 }
 
 function readItem() {
@@ -50,32 +50,57 @@ function readItem() {
 			xhr.setRequestHeader('x-api-key', 'NZLlovyCrO83qyPR4IXNl7ARqF9nLaFn2EZp7AlL');
 		},
 		success: function (data) {
-			// :walert("Success!" + JSON.stringify(data))
+			alert("Success!" + JSON.stringify(data))
 			document.getElementById("bugStatusID").innerHTML="Bug ID: " + data['code'];
 			document.getElementById("bugStatusDescr").innerHTML = "Description: " + data['description'];
 			document.getElementById("bugStatusDoing").innerHTML= "Details: " + data['details'];
 			document.getElementById("bugStatusStatus").innerHTML="Status: " + data['status'];
 		}
-     })
+	 })
 		
+}
+
+function login() {
+	var username = document.getElementById("username").value;
+	console.log(username);
+	sessionStorage.setItem('username',username);
+	document.getElementById("username").value="";
+	document.getElementById("password").value="";
+
+
 }
 
 </script>
 </head>
 
 <body style="margin:25">
-  <a href = "table.html">
-	  <button type="button" class="btn btn-default">Table</button></a>
-  <a href = "index.html">
-	  <button type="button" class="btn btn-default disabled">Home</button></a>
-  <div class="btn-group" role="group" aria-label="...">
-	  <a href = "tester.html" class="btn btn-default">Tester</a>
-	  <a href="developer.html" class="btn btn-default">Developer</a>
-	  <a href="manager.html" class="btn btn-default">Manager</a>
-  </div>
-  <br>
-  <br>
+	<a href = "table.html">
+		<button type="button" class="btn btn-default">Table</button></a>
+	<a href = "dynamoForm.html">
+		<button type="button" class="btn btn-default disabled">Home</button></a>
+	<div class="btn-group" role="group" aria-label="...">
+		<a href = "tester.html" class="btn btn-default">Tester</a>
+		<a href="developer.html" class="btn btn-default">Developer</a>
+		<a href="manager.html" class="btn btn-default">Manager</a>
+	</div>
 	
+	<!-- login -->
+	<form style="width:200px; float:right" align="right">
+  <div class="form-group">
+	<input type="text" class="form-control" id="username"  placeholder="Enter username">
+	<input type="password" class="form-control" id="password" placeholder="Password">
+  <input id="usernameSubmit" type="button" value="Login" onclick="login();" />
+  <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+</div>
+</form>
+
+	<br>
+	<br>
+	<br>
+	<br>
+
+
+
   <form id="addBug">
 	<div class="form-group">
 	<label for="description">Description of the bug:</label>
@@ -103,7 +128,6 @@ function readItem() {
 </form>
 
 <br>
-
 <p id = "bugStatusID"></p>
 <p id = "bugStatusDescr"></p>
 <p id = "bugStatusDoing"></p>

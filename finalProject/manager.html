@@ -198,8 +198,12 @@ function assignToDev(bugID,devName) {
 			   }
 		})
 }
-
-managerData();
+var username = sessionStorage.getItem('username');
+console.log(username);
+if(username=="manager"||username=="Manager") {
+	console.log(username);
+	managerData();
+}
 </script>
 
 
