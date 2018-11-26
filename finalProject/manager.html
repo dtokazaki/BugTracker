@@ -85,11 +85,16 @@ function managerData() {
 				var td2 = tr.insertCell();
 				td2.appendChild(document.createTextNode(bug['description']));
 				td2.style.border = '1px solid black';
+				td2.style.padding= '10px';
+				td2.style.maxWidth= '300px';
+				td2.style.wordWrap= 'break-word';
 
 				//what client was doing
 				var td3 = tr.insertCell();
 				td3.appendChild(document.createTextNode(bug['details']));;
 				td3.style.border = '1px solid black';
+				td3.style.padding='10px';
+				td3.style.maxWidth= '300px';
 				
 				//dev name
 				var td4 = tr.insertCell();
@@ -204,6 +209,8 @@ if(username=="manager"||username=="Manager") {
 	console.log(username);
 	managerData();
 }
+
+managerData();
 </script>
 
 
