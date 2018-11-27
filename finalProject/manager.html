@@ -13,11 +13,11 @@
 <body style="margin:25">
 	<a href = "table.html">
 		<button type="button" class="btn btn-default ">Table</button></a>    
-	<a href = "index.html">
-	  <button type="button" class="btn btn-default">Home</button></a>
+	<!-- <a href = "index.html"> -->
+	<!--  <button type="button" class="btn btn-default">Home</button></a> -->
   <div class="btn-group" role="group" aria-label="...">
-	  <a href = "tester.html" class="btn btn-default">Tester</a>
-	  <a href="developer.html" class="btn btn-default">Developer</a>
+	<!--  <a href = "tester.html" class="btn btn-default">Tester</a> -->
+	<!--  <a href="developer.html" class="btn btn-default">Developer</a> -->
 	  <a href="manager.html" class="btn btn-default disabled">Manager</a>
   </div>
   <br>
@@ -206,7 +206,7 @@ function assignToDev(bugID,devName) {
 }
 var username = sessionStorage.getItem('username');
 console.log(username);
-if(username=="manager"||username=="Manager") {
+if(username==="manager"||username=="Manager") {
 	console.log(username);
 	managerData();
 }
