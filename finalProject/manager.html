@@ -236,9 +236,9 @@ function assignToDev(bugID,devName) {
 			   }
 		})
 }
-var username = sessionStorage.getItem('username');
+var permission = sessionStorage.getItem('permission');
 
-if(username=="manager") {
+if(permission=="manager") {
 	console.log(username);
 	managerData();
 }

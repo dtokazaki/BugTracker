@@ -86,7 +86,8 @@ function login() {
 				document.getElementById("password").value = "";
 				return;
 			}
-			sessionStorage.setItem('username',data);
+			sessionStorage.setItem('permission',data);
+			sessionStorage.setItem('username',username);
 			console.log(data);
 			if(data == "tester") {
 				document.location.href = "tester.html";

@@ -11,7 +11,7 @@
 <meta content="utf-8" http-equiv="encoding">
 </head>
 <body style="margin:25">
-	<a href = "table.html">
+	<!-- <a href = "table.html">
         <button type="button" class="btn btn-default ">Table</button></a>    
 	<a href = "index.html">
 	  <button type="button" class="btn btn-default">Home</button></a>
@@ -19,7 +19,7 @@
 	  <a href = "tester.html" class="btn btn-default disabled">Tester</a>
 	  <a href="developer.html" class="btn btn-default">Developer</a>
 	  <a href="manager.html" class="btn btn-default">Manager</a>
-  </div>
+  </div> -->
 
   <form style = "width: 200px; float:right" align= "right">
   	<input id = "logoutid" type="button" value="Logout" onClick = "logout();" />
@@ -27,18 +27,20 @@
 
   <br>
   <br>
+  <br>
+  <br>
   <p id="testerName"> </p>
 <script type="text/javascript">
 
 function logout() {
-	sessionStorage.setItem("username", " ");
+	sessionStorage.setItem("permission", " ");
 	document.location.href = "index.html";
 }
 
 function testerData(tester) {
 	
 	 var data = "tester="+ tester;
-	 document.getElementById("testerName").innerHTML = tester;
+	 document.getElementById("testerName").innerHTML = "Username: " + tester;
 	 $.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getTester",
 		data: data,
@@ -308,9 +310,9 @@ function fixed(bugID,testerName,txt) {
 			   }
 		})
 }
-var username = sessionStorage.getItem('username');
+var permission = sessionStorage.getItem('permission');
 
-if(username == "tester") {
+if(permission == "tester") {
 	testerData(sessionStorage.getItem('username'));
 }
 else {
