@@ -86,7 +86,7 @@ function managerData() {
 				td2.appendChild(document.createTextNode(bug['description']));
 				td2.style.border = '1px solid black';
 				td2.style.padding= '10px';
-				td2.style.maxWidth= '300px';
+				td2.style.maxWidth= '400px';
 				td2.style.wordWrap= 'break-word';
 
 				//what client was doing
@@ -94,7 +94,8 @@ function managerData() {
 				td3.appendChild(document.createTextNode(bug['details']));;
 				td3.style.border = '1px solid black';
 				td3.style.padding='10px';
-				td3.style.maxWidth= '300px';
+				td3.style.maxWidth= '400px';
+				td3.style.maxWidth= 'break-word';
 				
 				//dev name
 				var td4 = tr.insertCell();
@@ -209,8 +210,10 @@ if(username=="manager"||username=="Manager") {
 	console.log(username);
 	managerData();
 }
+else {
+	document.location.href = index.html;
+}
 
-managerData();
 </script>
 
 

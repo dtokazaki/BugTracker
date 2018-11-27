@@ -66,8 +66,34 @@ function readItem() {
 
 function login() {
 	var username = document.getElementById("username").value;
+	var password = document.getElementById("password").value;
+
 	console.log(username);
-	sessionStorage.setItem('username',username);
+	console.log(password);
+	var data = JSON.stringify({password: password, username: username});
+
+	$.ajax({
+		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/login",
+		data: data,
+		type: "POST",
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader('x-api-key', 'qsC4GkBInl9l8EA9AsvRc6Le4W3EhCHd9uWb88S3');
+		},
+		success: function (data) {
+			alert("Success!" + JSON.stringify(data));
+			sessionStorage.setItem('username',data);
+			console.log(username);
+			
+			if(username = "manager") {
+				document.location.href = manager.html;
+			}
+
+
+		}
+	})
+
+	// console.log(username);
+ 	// sessionStorage.setItem('username',username); 
 	document.getElementById("username").value="";
 	document.getElementById("password").value="";
 
@@ -79,13 +105,13 @@ function login() {
 
 <body style="margin:25">
 	<a href = "table.html">
-		<button type="button" class="btn btn-default">Table</button></a>
+		<!-- <button type="button" class="btn btn-default">Table</button></a> -->
 	<a href = "dynamoForm.html">
 		<button type="button" class="btn btn-default disabled">Home</button></a>
 	<div class="btn-group" role="group" aria-label="...">
-		<a href = "tester.html" class="btn btn-default">Tester</a>
-		<a href="developer.html" class="btn btn-default">Developer</a>
-		<a href="manager.html" class="btn btn-default">Manager</a>
+		<!-- <a href = "tester.html" class="btn btn-default">Tester</a> -->
+		<!-- <a href="developer.html" class="btn btn-default">Developer</a> -->
+		<!-- <a href="manager.html" class="btn btn-default">Manager</a> -->
 	</div>
 	
 	<!-- login -->
