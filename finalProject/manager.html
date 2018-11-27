@@ -20,10 +20,19 @@
 	<!--  <a href="developer.html" class="btn btn-default">Developer</a> -->
 	  <a href="manager.html" class="btn btn-default disabled">Manager</a>
   </div>
+
+  <form style = "width:200px; float:right" align="right">
+  	<input id = "logoutid" type="button" value = "Logout" onClick = "logout();" />
+</form>
+
   <br>
   <br>
 <script type="text/javascript">
 
+function logout() {
+	sessionStorage.setItem("username", " ");
+	document.location.href = "index.html";
+}
 function managerData() {
 	var data = "manager="+"manager1";
 	$.ajax({
@@ -103,7 +112,7 @@ function managerData() {
 				td3.style.border = '1px solid black';
 				td3.style.padding='10px';
 				td3.style.maxWidth= '500px';
-				td3.style.maxWidth= 'break-word';
+				td3.style.wordWrap= 'break-word';
 				
 				//dev name
 				var td4 = tr.insertCell();
@@ -217,7 +226,7 @@ function assignToDev(bugID,devName) {
 }
 var username = sessionStorage.getItem('username');
 console.log(username);
-if(username=="manager"||username=="Manager") {
+if(username=="manager") {
 	console.log(username);
 	managerData();
 }

@@ -80,7 +80,12 @@ function login() {
 			xhr.setRequestHeader('x-api-key', 'qsC4GkBInl9l8EA9AsvRc6Le4W3EhCHd9uWb88S3');
 		},
 		success: function (data) {
-			alert("Success!" + JSON.stringify(data));
+			if(data == '-1') {
+				alert("Incorrect Credentials")
+				document.getElementById("username").value = "";
+				document.getElementById("password").value = "";
+				return;
+			}
 			sessionStorage.setItem('username',data);
 			console.log(username);
 			

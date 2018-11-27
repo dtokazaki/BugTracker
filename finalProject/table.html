@@ -15,17 +15,31 @@
 <body style="margin:25">
     <a href = "table.html">
         <button type="button" class="btn btn-default disabled">Table</button></a>
-    <a href = "index.html">
-        <button type="button" class="btn btn-default">Home</button></a>
-    <div class="btn-group" role="group" aria-label="...">
+  <!--  <a href = "index.html"> -->
+      <!--  <button type="button" class="btn btn-default">Home</button></a> -->
+  	  <div class="btn-group" role="group" aria-label="...">
+	  <!--
         <a href = "tester.html" class="btn btn-default">Tester</a>
-        <a href="developer.html" class="btn btn-default">Developer</a>
+        <a href="developer.html" class="btn btn-default">Developer</a> -->
         <a href="manager.html" class="btn btn-default">Manager</a>
     </div>
+
+	<form style = "width:200px; float:right" align="right">
+		<input id = "logoutid" type="button" value = "Logout" onClick= "logout();" />
+	</form>
+
+<br>
+<br>
 <br>
 <br>
 
 <script type="text/javascript">
+
+function logout() {
+	sessionStorage.setItem("username", " ");
+	document.location.href = "index.html";
+}
+
 function bugData() {
     var data;
     $.ajax({
@@ -46,34 +60,42 @@ function bugData() {
             var td1 = tr.insertCell();
             td1.appendChild(document.createTextNode("ID"));
             td1.style.border = '2px solid black';
+			td1.style.padding = '10px';
             
             var td2 = tr.insertCell();
             td2.appendChild(document.createTextNode("Severity"));
             td2.style.border = '2px solid black';
+			td2.style.padding = '10px';
             
             var td3 = tr.insertCell();
             td3.appendChild(document.createTextNode("Status"));
             td3.style.border = '2px solid black';
+			td3.style.padding = '10px';
             
             var td4 = tr.insertCell();
             td4.appendChild(document.createTextNode("Description"));
             td4.style.border = '2px solid black';
+			td4.style.padding = '10px';
             
             var td5 = tr.insertCell();
             td5.appendChild(document.createTextNode("Details"));
             td5.style.border = '2px solid black';
+			td5.style.padding = '10px';
 
             var td6 = tr.insertCell();
             td6.appendChild(document.createTextNode("Tester"));
             td6.style.border = '2px solid black';
+			td6.style.padding = '10px';
 
             var td7 = tr.insertCell();
             td7.appendChild(document.createTextNode("Developer"));
             td7.style.border = '2px solid black';
+			td7.style.padding = '10px';
 
             var td8 = tr.insertCell();
             td8.appendChild(document.createTextNode("Date"));
             td8.style.border = '2px solid black';
+			td8.style.padding = '10px';
             
             var i = 0;
 
@@ -86,33 +108,44 @@ function bugData() {
                 var td1 = tr.insertCell();
                 td1.appendChild(document.createTextNode(bug['code']));
                 td1.style.border = '1px solid black';
+				td1.style.padding = '10px';
 
                 //severity
                 var td2 = tr.insertCell();
                 td2.appendChild(document.createTextNode(bug['severity']));
                 td2.style.border = '1px solid black';
+				td2.style.padding = '10px';
 
                 //status
                 var td3 = tr.insertCell();
                 td3.appendChild(document.createTextNode(bug['status']));
                 td3.style.border = '1px solid black';
+				td3.style.padding = '10px';
 
                 //description
                 var td4 = tr.insertCell();
                 td4.appendChild(document.createTextNode(bug['description']));
                 td4.style.border = '1px solid black';
+				td4.style.padding = '10px';
+				td4.style.maxWidth = '500px';
+				td4.style.wordWrap = 'break-word';
 
                 //what client was doing
                 var td5 = tr.insertCell();
                 td5.appendChild(document.createTextNode(bug['details']));
                 td5.style.border = '1px solid black';
+				td5.style.padding = '10px';
+				td5.style.maxWidth = '500px';
+				td5.style.wordWrap = 'break-word';
                 
                 //tester name
-                var td7 = tr.insertCell();
+                var td6 = tr.insertCell();
                 var testName = bug['tester'];
                 //if(testName==" ") testName = "not assigned";
-                td7.appendChild(document.createTextNode(testName));
-                td7.style.border = '1px solid black';
+                td6.appendChild(document.createTextNode(testName));
+                td6.style.border = '1px solid black';
+				td6.style.padding = '10px';
+
 
                 //dev name
                 var td7 = tr.insertCell();
@@ -120,20 +153,28 @@ function bugData() {
                 //if(devName==" ") devName = "not assigned";
                 td7.appendChild(document.createTextNode(devName));
                 td7.style.border = '1px solid black';
+				td7.style.padding = '10px';
                 
                
                 //last updated date
                 var td8 = tr.insertCell();
                 td8.appendChild(document.createTextNode(bug['lastUpdatedDate']));
                 td8.style.border = '1px solid black';
+				td8.style.padding = '10px';
             }); 
             body.appendChild(tbl);
         }
     })
 
 }
+var username = sessionStorage.getItem('username');
 
-bugData();
+if(username == "manager") {
+	bugData();
+}
+else {
+	document.location.href = "index.html";
+}
 </script>
 
 </body>
