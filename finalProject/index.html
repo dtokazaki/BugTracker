@@ -68,8 +68,8 @@ function login() {
 	var username = document.getElementById("username").value;
 	var password = document.getElementById("password").value;
 
-	console.log(username);
-	console.log(password);
+	// console.log(username);
+	// console.log(password);
 	var data = JSON.stringify({password: password, username: username});
 
 	$.ajax({
@@ -87,9 +87,14 @@ function login() {
 				return;
 			}
 			sessionStorage.setItem('username',data);
-			console.log(username);
-			
-			if(username == "manager") {
+			console.log(data);
+			if(data == "tester") {
+				document.location.href = "tester.html";
+			}
+			else if(data == "developer") {
+				document.location.href = "developer.html";
+			}
+			else if(data == "manager") {
 				document.location.href = "manager.html";
 			}
 
