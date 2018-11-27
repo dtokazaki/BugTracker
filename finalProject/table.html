@@ -1,5 +1,5 @@
 <!DOCTYPE>
-<html>
+<html>  
 <head>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -62,6 +62,11 @@ function bugData() {
             td1.style.border = '2px solid black';
 			td1.style.padding = '10px';
             
+            var td1b = tr.insertCell();
+            td1b.appendChild(document.createTextNode("System"));
+            td1b.style.border = '2px solid black';
+            td1b.style.padding = '10px';
+
             var td2 = tr.insertCell();
             td2.appendChild(document.createTextNode("Severity"));
             td2.style.border = '2px solid black';
@@ -110,6 +115,12 @@ function bugData() {
                 td1.style.border = '1px solid black';
 				td1.style.padding = '10px';
 
+                //system
+                var td1b = tr.insertCell();
+                td1b.appendChild(document.createTextNode(bug['system']));
+                td1b.style.border = '1px solid black';
+                td1b.style.padding= '10px';
+                
                 //severity
                 var td2 = tr.insertCell();
                 td2.appendChild(document.createTextNode(bug['severity']));
