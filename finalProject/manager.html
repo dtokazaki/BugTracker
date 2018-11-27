@@ -56,6 +56,12 @@ function managerData() {
 			td1.appendChild(document.createTextNode("ID"));
 			td1.style.border = '2px solid black';
 			td1.style.padding = '10px'
+
+
+			var td1b = tr.insertCell();
+			td1b.appendChild(document.createTextNode("System"));
+			td1b.style.border = '2px solid black';
+			td1b.style.padding = '10px';
 			
 			var td2 = tr.insertCell();
 			td2.appendChild(document.createTextNode("Description"));
@@ -87,6 +93,7 @@ function managerData() {
 			td7.style.border = '2px solid black';
 			td7.style.padding = '10px';
 
+
 			data.forEach(function(bug) {
 				var id = bug['code'];
 
@@ -97,6 +104,12 @@ function managerData() {
 				td1.appendChild(document.createTextNode(bug['code']));
 				td1.style.border = '1px solid black';
 				td1.style.padding = '10px'
+
+				//system
+				var td1b = tr.insertCell();
+				td1b.appendChild(document.createTextNode(bug['system']));
+				td1b.style.border = '1px solid black';
+				td1b.style.padding= '10px';
 
 				//description
 				var td2 = tr.insertCell();
@@ -164,7 +177,6 @@ function managerData() {
 						var chosenName = this.innerHTML;
 						console.log(chosenName);
 						tbl.deleteRow(this.parentNode.parentNode.parentNode.parentNode.rowIndex);
-
 						if(who=="tester") {
 							assignToTest(bug['code'],chosenName);
 							//assign to tester
