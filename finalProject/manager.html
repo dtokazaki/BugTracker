@@ -46,30 +46,37 @@ function managerData() {
 			var td1 = tr.insertCell();
 			td1.appendChild(document.createTextNode("ID"));
 			td1.style.border = '2px solid black';
+			td1.style.padding = '10px'
 			
 			var td2 = tr.insertCell();
 			td2.appendChild(document.createTextNode("Description"));
 			td2.style.border = '2px solid black';
+			td2.style.padding = '10px';
 			
 			var td3 = tr.insertCell();
 			td3.appendChild(document.createTextNode("Details"));
 			td3.style.border = '2px solid black';
+			td3.style.padding = '10px';
 			
 			var td4 = tr.insertCell();
 			td4.appendChild(document.createTextNode("Severity"));
 			td4.style.border = '2px solid black';
+			td4.style.padding ='10px';
 			
 			var td5 = tr.insertCell();
 			td5.appendChild(document.createTextNode("Status"));
 			td5.style.border = '2px solid black';
+			td5.style.padding = '10px';
 			
 			var td6 = tr.insertCell();
 			td6.style.border = '2px solid black';
+			td6.style.padding = '10px';
 			var i = 0;
 
 			var td7 = tr.insertCell();
 			td7.appendChild(document.createTextNode("Date"));
 			td7.style.border = '2px solid black';
+			td7.style.padding = '10px';
 
 			data.forEach(function(bug) {
 				var id = bug['code'];
@@ -80,13 +87,14 @@ function managerData() {
 				var td1 = tr.insertCell();
 				td1.appendChild(document.createTextNode(bug['code']));
 				td1.style.border = '1px solid black';
+				td1.style.padding = '10px'
 
 				//description
 				var td2 = tr.insertCell();
 				td2.appendChild(document.createTextNode(bug['description']));
 				td2.style.border = '1px solid black';
 				td2.style.padding= '10px';
-				td2.style.maxWidth= '400px';
+				td2.style.maxWidth= '500px';
 				td2.style.wordWrap= 'break-word';
 
 				//what client was doing
@@ -94,22 +102,24 @@ function managerData() {
 				td3.appendChild(document.createTextNode(bug['details']));;
 				td3.style.border = '1px solid black';
 				td3.style.padding='10px';
-				td3.style.maxWidth= '400px';
+				td3.style.maxWidth= '500px';
 				td3.style.maxWidth= 'break-word';
 				
 				//dev name
 				var td4 = tr.insertCell();
 				td4.appendChild(document.createTextNode(bug['severity']));
 				td4.style.border = '1px solid black';
+				td4.style.padding = '10px';
 				
 				//status
 				var td5 = tr.insertCell();
 				td5.appendChild(document.createTextNode(bug['status']));
 				td5.style.border = '1px solid black';
+				td5.style.padding = '10px';
 				
 				//manager's choice
 				var td6 = tr.insertCell();
-
+				td6.style.padding = '10px';
 				var div1 = document.createElement('div');
 				div1.setAttribute("class","btn-group");
 				var button = document.createElement('button');
@@ -168,6 +178,7 @@ function managerData() {
 				var td7 = tr.insertCell();
 				td7.appendChild(document.createTextNode(bug['lastUpdatedDate']));
 				td7.style.border = '1px solid black';
+				td7.style.padding='10px';
 			}); 
 			body.appendChild(tbl);
 		}
@@ -206,12 +217,12 @@ function assignToDev(bugID,devName) {
 }
 var username = sessionStorage.getItem('username');
 console.log(username);
-if(username==="manager"||username=="Manager") {
+if(username=="manager"||username=="Manager") {
 	console.log(username);
 	managerData();
 }
 else {
-	document.location.href = index.html;
+	document.location.href = "index.html";
 }
 
 </script>
