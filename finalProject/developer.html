@@ -34,7 +34,7 @@ function logout() {
 }
 function devData(dev) {
 	var data = "developer="+dev;
-	document.getElementById("devName").innerHTML = dev;
+	document.getElementById("devName").innerHTML = "Username: " +dev;
 	$.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getDeveloper",
 		data: data,
@@ -172,7 +172,7 @@ function devData(dev) {
 				expandButton.innerHTML = "expand";
 				var exp = expandButton.innerHTML;
 				var newDevDescription = bug['developerDescription'];
-				if(newDevDescription==" ") newDevDescription = "No description yet.";
+				if(newDevDescription == "No Description Yet") newDevDescription = "";	
 				var tr2, tdDev, tdTest, devText;
 				expandButton.addEventListener('click',function() {
 					if(exp=="expand") {
@@ -188,6 +188,7 @@ function devData(dev) {
 						tdLabel.style.verticalAlign = "top";
 						tdDev = tr2.insertCell();
 						devText = document.createElement('textarea');
+						devText.rows="10";
 						devText.style.margin="5";
 						devText.style.maxWidth = "500px";
 						devText.innerHTML = newDevDescription;
@@ -252,6 +253,9 @@ function devData(dev) {
 }
 
 function toTest(bugID,devName,severity,txt) {
+	if(txt == " "|| txt == "") {
+		txt = "No Description Yet";
+	}
 	var data = "text=" + txt + "&developer="+devName + "&id="+bugID + "&severity="+severity;
 	$.ajax({
 			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/developerToTester",
@@ -266,8 +270,13 @@ function toTest(bugID,devName,severity,txt) {
 			   }
 		})
 }
- 
-devData(sessionStorage.getItem('username'));
+var permission = sessionStorage.getItem('permission');
+if(permission == 'developer') {
+	devData(sessionStorage.getItem('username'));
+}
+else {
+	document.location.href = "index.html";
+}
 </script>
 
 

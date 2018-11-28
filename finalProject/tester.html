@@ -172,7 +172,7 @@ function testerData(tester) {
 				expandButton.innerHTML = "expand";
 				var exp = expandButton.innerHTML;
 				var newTestDescription = bug['testerDescription'];
-				if(newTestDescription==" ") newTestDescription = "No description yet.";
+				if(newTestDescription == "No Description Yet") newTestDescription = "";	
 				var tr2, tdDev, tdTest, testText;
 				expandButton.addEventListener('click',function() {
 					if(exp=="expand") {
@@ -188,6 +188,7 @@ function testerData(tester) {
 						tdTest = tr2.insertCell();
 						testText = document.createElement('textarea');
 						testText.innerHTML = newTestDescription;
+						testText.rows = "10";
 						tdTest.colSpan = "4";
 						testText.style.width = "98%";
 						testText.style.height = "100%";
@@ -279,6 +280,9 @@ function toManager(bugID,testerName,sevLevel,txt) {
 		})
 }
 function toDev(bugID,testerName,sevLevel,txt) {
+	if(txt == " " || txt == "") {
+		txt = "No Description Yet";
+	}
 	var data = "text="+txt + "&tester="+testerName + "&id="+bugID + "&severity=" + sevLevel;
 	console.log(data);
 	$.ajax({
