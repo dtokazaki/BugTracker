@@ -4,7 +4,17 @@ from boto3.dynamodb.conditions import Key
 import uuid
 import datetime
 import json
+'''
+parameters
+    event (dictionary): stores data
+        description (string): description of what client was doing when they found the bug
+        details (string): more info about the bug
+        system (string): what system the client was using when they found the bug
+    context (object): information about the function 
+returns id (string): unique code for the bug that was reported
 
+this function is used to create a new bug and send the form to the manager to assign a testers
+'''
 # Create Form
 def createForm(event,context):
     # Create a DynamoDB resource
