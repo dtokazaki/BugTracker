@@ -234,9 +234,8 @@ function devData(dev) {
 					tbl.deleteRow(this.parentNode.parentNode.rowIndex);
 					i--;
 				});
-				button2.innerHTML = "Give up";
+				
 				td6.appendChild(button1);
-				td6.appendChild(button2);
 				td6.style.border = '1px solid black';
 				td6.style.padding= '10px';
 
@@ -267,21 +266,7 @@ function toTest(bugID,devName,severity,txt) {
 			   }
 		})
 }
-function unresolved(bugID,devName) {
-	var data = "developer="+devName + "&id="+bugID;
-	$.ajax({
-			   url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/developerUnresolved",
-			   data: data,
-			   type: "GET",
-			   beforeSend: function(xhr) {
-			       xhr.setRequestHeader('x-api-key', '6Tn41vnLQ77wFuGgRRx5J3tgRE153n2e2axBQNqZ');
-					console.log(JSON.stringify(data))
-			   },
-			   success: function (data) {
-					console.log(data);
-			   }
-		})
-} 
+ 
 devData(sessionStorage.getItem('username'));
 </script>
 
