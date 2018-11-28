@@ -68,6 +68,8 @@ function login() {
 	var username = document.getElementById("username").value;
 	var password = document.getElementById("password").value;
 
+	if(username == "" || password == "") return;
+
 	// console.log(username);
 	// console.log(password);
 	var data = JSON.stringify({password: password, username: username});
