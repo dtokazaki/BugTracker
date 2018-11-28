@@ -33,7 +33,7 @@ function logout() {
 function testerData(tester) {
 	
 	 var data = "tester="+ tester;
-	 document.getElementById("testerName").innerHTML = "Username: " + tester;
+	 document.getElementById("testerName").innerHTML = "Username: ".bold() + tester;
 	 $.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getTester",
 		data: data,

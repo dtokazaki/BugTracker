@@ -26,7 +26,7 @@ function logout() {
 }
 function devData(dev) {
 	var data = "developer="+dev;
-	document.getElementById("devName").innerHTML = "Username: " +dev;
+	document.getElementById("devName").innerHTML = "Username: ".bold() + dev;
 	$.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getDeveloper",
 		data: data,
