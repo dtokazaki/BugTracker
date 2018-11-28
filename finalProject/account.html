@@ -71,11 +71,11 @@
             var password = document.getElementById("passwordBox").value;
             var permission = document.getElementById("exampleFormControlSelect1").value;
 
-            console.log(username);
-            console.log(permission);
 
             if (username == "" || password == "" || username.trim().length == 0 || password.trim().length == 0) {
                 alert("No Credentials Inputted")
+				document.getElementById("passwordBox").value = "";
+				document.getElementById("usernameBox").value = "";
                 return;
             }
             var data = JSON.stringify({ "username": username, "password": password, "permission": permission });
@@ -91,7 +91,6 @@
                     if (data == '-1') {
                         alert("Username already taken")
                         document.getElementById("usernameBox").value = "";
-                        document.getElementById("passwordBox").value = "";
                         return;
                     }
                     alert("Success! Created" + permission + "with Username: " + username)

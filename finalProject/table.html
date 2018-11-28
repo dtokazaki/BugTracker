@@ -64,6 +64,7 @@ function bugData() {
             td1.appendChild(document.createTextNode("ID"));
             td1.style.border = '2px solid black';
 			td1.style.padding = '10px';
+			td1.style.width = '300px';
             
             var td1b = tr.insertCell();
             td1b.appendChild(document.createTextNode("System"));
@@ -84,11 +85,13 @@ function bugData() {
             td4.appendChild(document.createTextNode("Description"));
             td4.style.border = '2px solid black';
 			td4.style.padding = '10px';
+			td4.style.width = '300px';
             
             var td5 = tr.insertCell();
             td5.appendChild(document.createTextNode("Details"));
             td5.style.border = '2px solid black';
 			td5.style.padding = '10px';
+			td5.style.width = '300px';
 
             var td6 = tr.insertCell();
             td6.appendChild(document.createTextNode("Tester"));
@@ -101,9 +104,19 @@ function bugData() {
 			td7.style.padding = '10px';
 
             var td8 = tr.insertCell();
-            td8.appendChild(document.createTextNode("Date"));
+            td8.appendChild(document.createTextNode("Date Last Updated"));
             td8.style.border = '2px solid black';
 			td8.style.padding = '10px';
+				
+			var td9 = tr.insertCell();
+            td9.appendChild(document.createTextNode("Date Created"));
+            td9.style.border = '2px solid black';
+			td9.style.padding = '10px';
+
+			var td10 = tr.insertCell();
+            td10.appendChild(document.createTextNode("Last Updated By"));
+            td10.style.border = '2px solid black';
+			td10.style.padding = '10px';
             
             var i = 0;
 
@@ -141,7 +154,7 @@ function bugData() {
                 td4.appendChild(document.createTextNode(bug['description']));
                 td4.style.border = '1px solid black';
 				td4.style.padding = '10px';
-				td4.style.maxWidth = '500px';
+				td4.style.maxWidth = '300px';
 				td4.style.wordWrap = 'break-word';
 
                 //what client was doing
@@ -149,7 +162,7 @@ function bugData() {
                 td5.appendChild(document.createTextNode(bug['details']));
                 td5.style.border = '1px solid black';
 				td5.style.padding = '10px';
-				td5.style.maxWidth = '500px';
+				td5.style.maxWidth = '300px';
 				td5.style.wordWrap = 'break-word';
                 
                 //tester name
@@ -175,6 +188,18 @@ function bugData() {
                 td8.appendChild(document.createTextNode(bug['lastUpdatedDate']));
                 td8.style.border = '1px solid black';
 				td8.style.padding = '10px';
+
+				//last updated date
+                var td9 = tr.insertCell();
+                td9.appendChild(document.createTextNode(bug['dateCreated']));
+                td9.style.border = '1px solid black';
+				td9.style.padding = '10px';
+
+				//last updated by
+                var td10 = tr.insertCell();
+                td10.appendChild(document.createTextNode(bug['lastUpdatedBy']));
+                td10.style.border = '1px solid black';
+				td10.style.padding = '10px';
             }); 
             body.appendChild(tbl);
         }

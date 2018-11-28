@@ -50,6 +50,7 @@ function devData(dev) {
 			td1.appendChild(document.createTextNode("ID"));
 			td1.style.border = '2px solid black';
 			td1.style.padding= '10px';
+			td1.style.width = '300px';
 
 			var td1b = tr.insertCell();
 			td1b.appendChild(document.createTextNode("System"));
@@ -60,11 +61,13 @@ function devData(dev) {
 			td2.appendChild(document.createTextNode("Description"));
 			td2.style.border = '2px solid black';
 			td2.style.padding= '10px';
+			td2.style.width = '400px';
 
 			var td3 = tr.insertCell();
 			td3.appendChild(document.createTextNode("Details"));
 			td3.style.border = '2px solid black';
 			td3.style.padding= '10px';
+			td2.style.width='400px';
 
 			var td4 = tr.insertCell();
 			td4.appendChild(document.createTextNode("Severity"));
@@ -82,9 +85,14 @@ function devData(dev) {
 			var i = 0;
 
 			var td7 = tr.insertCell();
-			td7.appendChild(document.createTextNode("Date"));
+			td7.appendChild(document.createTextNode("Date Last Updated"));
 			td7.style.border = '2px solid black';
 			td7.style.padding= '10px';
+
+			var td8 = tr.insertCell();
+			td8.appendChild(document.createTextNode("Created Date"));
+			td8.style.border = '2px solid black';
+			td8.style.padding= '10px';
 
 			data.forEach(function(bug) {
 				console.log(bug);
@@ -109,7 +117,8 @@ function devData(dev) {
 				td2.appendChild(document.createTextNode(bug['description']));
 				td2.style.border = '1px solid black';
 				td2.style.padding= '10px';
-				td2.style.maxWidth= '500px';
+				td2.style.maxWidth= '400px';
+				td2.style.width='400px';
 				td2.style.wordWrap= 'break-word';
 
 				//what client was doing
@@ -119,6 +128,7 @@ function devData(dev) {
 				td3.style.padding= '10px';
 				td3.style.maxWidth= '500px';
 				td3.style.wordWrap= 'break-word';
+				td3.style.width='500px';
 
 				//severity level
 				var td4 = tr.insertCell();
@@ -171,13 +181,13 @@ function devData(dev) {
 					if(exp=="expand") {
 						tr2 = tbl.insertRow(this.parentNode.parentNode.rowIndex+1);
 						tdTest = tr2.insertCell();
-						tdTest.innerHTML = "Tester description: " + bug['testerDescription'];
+						tdTest.innerHTML = "Tester description: ".bold() + bug['testerDescription'];
 						tdTest.style.verticalAlign = "top";
 						tdTest.colSpan = "3";
 						tdTest.style.maxWidth = "500px";
 						tdTest.style.border = '1px solid black';
 						var tdLabel = tr2.insertCell();
-						tdLabel.innerHTML = "Dev description:";
+						tdLabel.innerHTML = "Dev description:".bold();
 						tdLabel.style.verticalAlign = "top";
 						tdDev = tr2.insertCell();
 						devText = document.createElement('textarea');
@@ -185,7 +195,7 @@ function devData(dev) {
 						devText.style.margin="5";
 						devText.style.maxWidth = "500px";
 						devText.innerHTML = newDevDescription;
-						tdDev.colSpan = "4";
+						tdDev.colSpan = "5";
 						devText.style.width = "98%";
 						devText.style.height = "100%";
 						devText.style.verticalAlign = "top";
@@ -238,6 +248,12 @@ function devData(dev) {
 				td7.appendChild(document.createTextNode(bug['lastUpdatedDate']));
 				td7.style.border = '1px solid black';
 				td7.style.padding= '10px';
+
+				//Created Date
+				var td8 = tr.insertCell();
+				td8.appendChild(document.createTextNode(bug['dateCreated']));
+				td8.style.border = '1px solid black';
+				td8.style.padding= '10px';
 			}); 
 			body.appendChild(tbl);
 		}

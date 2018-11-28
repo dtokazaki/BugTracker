@@ -27,8 +27,9 @@
 
 function logout() {
 	sessionStorage.setItem("permission", " ");
+	sessionStorage.setItem("username", " ");
 	document.location.href = "index.html";
-	sessionStorage.setItem("permission", " ");
+
 
 }
 
@@ -61,6 +62,7 @@ function testerData(tester) {
 			td1.appendChild(document.createTextNode("ID"));
 			td1.style.border = '2px solid black';
 			td1.style.padding = '10px';
+			td1.style.width = '300px';
 			
 			var td1b = tr.insertCell();
 			td1b.appendChild(document.createTextNode("System"));
@@ -71,11 +73,13 @@ function testerData(tester) {
 			td2.appendChild(document.createTextNode("Description"));
 			td2.style.border = '2px solid black';
 			td2.style.padding = '10px';
+			td2.style.width='400px';
 			
 			var td3 = tr.insertCell();
 			td3.appendChild(document.createTextNode("Details"));
 			td3.style.border = '2px solid black';
 			td3.style.padding ='10px';
+			td3.style.width='400px';
 			
 			var td4 = tr.insertCell();
 			td4.appendChild(document.createTextNode("Severity"));
@@ -93,9 +97,15 @@ function testerData(tester) {
 
 
 			var td7 = tr.insertCell();
-			td7.appendChild(document.createTextNode("Date"));
+			td7.appendChild(document.createTextNode("Date Last Updated"));
 			td7.style.border = '2px solid black';
 			td7.style.padding = '10px';
+
+			var td8 = tr.insertCell();
+			td8.appendChild(document.createTextNode("Date Created"));
+			td8.style.border = '2px solid black';
+			td8.style.padding = '10px';
+
 
 			data.forEach(function(bug) {
 				var id = bug['id'];
@@ -118,7 +128,7 @@ function testerData(tester) {
 				td2.appendChild(document.createTextNode(bug['description']));
 				td2.style.border = '1px solid black';
 				td2.style.padding = '10px';
-				td2.style.maxWidth = '500px';
+				td2.style.maxWidth = '400px';
 				td2.style.wordWrap='break-word';
 
 				//what client was doing
@@ -126,7 +136,7 @@ function testerData(tester) {
 				td3.appendChild(document.createTextNode(bug['details']));
 				td3.style.border = '1px solid black';
 				td3.style.padding='10px';
-				td3.style.maxWidth = '500px';
+				td3.style.maxWidth = '400px';
 				td3.style.wordWrap='break-word';
 				
 				
@@ -177,23 +187,24 @@ function testerData(tester) {
 				expandButton.innerHTML = "expand";
 				var exp = expandButton.innerHTML;
 				var newTestDescription = bug['testerDescription'];
-				if(newTestDescription==" ") newTestDescription = "No description yet.";
+				if(newTestDescription==" ") newTestDescription = "No description yet";
 				var tr2, tdDev, tdTest, testText;
 				expandButton.addEventListener('click',function() {
 					if(exp=="expand") {
 						tr2 = tbl.insertRow(this.parentNode.parentNode.rowIndex+1);
 						tdDev = tr2.insertCell();
-						tdDev.innerHTML = "Dev description: " + bug['developerDescription'];
+						tdDev.innerHTML = "Dev Description: ".bold() + bug['developerDescription'];
 						tdDev.style.verticalAlign = "top";
-						tdDev.colSpan = "2";
+						tdDev.colSpan = "3";
 						tdDev.style.border = '1px solid black';
 						var tdLabel = tr2.insertCell();
-						tdLabel.innerHTML = "Tester description:";
+						tdLabel.innerHTML = "Tester description:".bold();
 						tdLabel.style.verticalAlign = "top";
 						tdTest = tr2.insertCell();
 						testText = document.createElement('textarea');
 						testText.innerHTML = newTestDescription;
-						tdTest.colSpan = "4";
+						testText.rows="10";
+						tdTest.colSpan = "5";
 						testText.style.width = "98%";
 						testText.style.height = "100%";
 						testText.style.margin="5";
@@ -212,6 +223,7 @@ function testerData(tester) {
 				td5.appendChild(expandButton);
 				td5.style.border = '1px solid black';
 				td5.style.textAlign = "center";
+				td5.style.padding = '10px';
 
 				// if bug was fixed or not
 				var td6 = tr.insertCell();
@@ -254,6 +266,12 @@ function testerData(tester) {
 				td7.style.padding='10px';
 				td7.appendChild(document.createTextNode(bug['lastUpdatedDate']));
 				td7.style.border = '1px solid black';
+
+				//date created
+				var td8 = tr.insertCell();
+				td8.style.padding='10px';
+				td8.appendChild(document.createTextNode(bug['dateCreated']));
+				td8.style.border = '1px solid black';
 			}); 
 			body.appendChild(tbl);
 
