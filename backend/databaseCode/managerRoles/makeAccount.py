@@ -2,7 +2,19 @@ import boto3
 from boto3 import resource
 from boto3.dynamodb.conditions import Key
 from passlib.hash import pbkdf2_sha256
+'''
+parameters
+    event (dictionary): stores data
+        username (string): username
+        password (string): password
+        permission (string): permission level (tester or developer)
+    context (object): information about the function 
+returns 
+    -1 (int): username in use
+    0 (int): account created
 
+this function is used to make a new account and assign it a username, password, and permission level
+'''
 def makeAccount(event,context):
     # Create a DynamoDB resource
     dynamodb = boto3.resource('dynamodb')

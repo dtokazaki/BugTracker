@@ -2,8 +2,18 @@ import boto3
 from boto3 import resource
 from boto3.dynamodb.conditions import Key
 from passlib.hash import pbkdf2_sha256
+'''
+parameters
+    event (dictionary): stores data
+        username (string): username
+        password (string): password
+    context (object): information about the function 
+returns 
+    failed to log in    -> -1 (int): error
+    logged in correctly -> response['item']['permission'] (string): permission level
 
-# Create God account
+this function is used to log in to a user's account
+'''
 def login(event,context):
     # Create a DynamoDB resource
     dynamodb = resource('dynamodb')
@@ -26,5 +36,5 @@ def login(event,context):
             return response['Item']['permission']
         else:
             return -1
-    else:
+    except:
         return -1

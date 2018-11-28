@@ -3,7 +3,16 @@ from boto3 import resource
 from boto3.dynamodb.conditions import Key
 import datetime
 
+'''
+parameters
+    event (dictionary): stores data
+        id (string): bug ID
+        developer (string): developer's username
+    context (object): information about the function 
+returns 0 (int): not an error
 
+this function is used to assign a developer
+'''
 def assignToDeveloper(event,context):
     dynamodb = resource('dynamodb')
     table = dynamodb.Table('bugTracker')

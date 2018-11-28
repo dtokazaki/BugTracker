@@ -1,3 +1,15 @@
+'''
+parameters
+    event (dictionary): stores data
+        id (string): bug ID
+        tester (string): tester's username
+        text (string): tester's description
+        severity (string): updated severity level
+    context (object): information about the function 
+returns 0 (int): not an error
+
+this function is used to mark a bug as an issue and send it to the assigned developer
+'''
 def testerToDeveloper(event,context):
     dynamodb = resource('dynamodb')
     table = dynamodb.Table('bugTracker')
