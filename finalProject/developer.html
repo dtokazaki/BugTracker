@@ -10,21 +10,45 @@
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <meta content="utf-8" http-equiv="encoding">
 <title>SCU IT Bug Reporting Program</title>
-
 </head>
+<!-- 
+this page can be used by developers only
+each developer can look at bugs assigned to them, adjust the severity level, add a description, and
+	send the bug back for more testing
+developers can also logout
+ -->
 <body style="margin:25">
-  <form style = "width:200px; float:right" align="right">
-  	<input id = "logoutid" type="button" value = "Logout" onClick = "logout();" />
-</form>
-  <br>
-  <br>
-  <p id="devName"> </p>
+	<form style = "width:200px; float:right" align="right">
+	  	<input id = "logoutid" type="button" value = "Logout" onClick = "logout();" />
+	</form>
+<br>
+<br>
+<p id="devName"> </p>
+
 <script type="text/javascript">
+
+/*
+    logout()
+    no parameters
+    return type: null
+    logs the user out by setting username and permission to " " and returning user to index.html
+*/
 function logout() {
     sessionStorage.setItem("username", " ");
     sessionStorage.setItem("permission", " ");
 	document.location.href = "index.html";
 }
+
+/*
+    devData()
+    no parameters
+    return type: null
+    creates and displays a table listing all of the bugs that are assigned to the developer who logged in
+    includes information such as the system, description, and details of the bug
+        as well as the tester, developer, date created, date last updated, severity, and more
+    also include the abiity to look at tester's description, to add/change their own description,
+    	to adjust the severity level, and to send back to testing
+*/
 function devData(dev) {
 	var data = "developer="+dev;
 	document.getElementById("devName").innerHTML = "Username: ".bold() + dev;
@@ -261,6 +285,17 @@ function devData(dev) {
 
 }
 
+/*
+	toTest()
+	parameters: 
+	* bugID (string): the id of the bug being sent to testing
+	* devName (string): the username of the developer the bug is assigned to
+	* severity (string): severity level of the bug
+	* txt (string): the (updated) developer's description of the bug
+	return type: null
+	when the developer thinks the bug they were working on is fixed, they can send it to testing with 
+		various updates
+*/
 function toTest(bugID,devName,severity,txt) {
 	if(txt == " "|| txt == "") {
 		txt = "No Description Yet";
@@ -280,6 +315,7 @@ function toTest(bugID,devName,severity,txt) {
 		})
 }
 var permission = sessionStorage.getItem('permission');
+// if the user doesn't have developer permissions, send them back to the index page
 if(permission == 'developer') {
 	devData(sessionStorage.getItem('username'));
 }

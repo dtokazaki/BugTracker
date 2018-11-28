@@ -11,39 +11,64 @@
 <meta content="utf-8" http-equiv="encoding">
 <title>SCU IT Bug Reporting Program</title>
 </head>
+<!-- 
+this page can be used by managers only
+on this page, managers can only see bugs that are waiting for a tester or developer to be assigned to them
+the manager can also change pages to look at all bugs reported, or the bugs that need
+    a tester or developer assigned
+the manager can also logout
+ -->
 <body style="margin:25">
-	<a href = "table.html">
-		<button type="button" class="btn btn-default ">Table</button></a>    
-	<!--<a href = "index.html"> -->
-	<!--  <button type="button" class="btn btn-default">Home</button></a> -->
-  <div class="btn-group" role="group" aria-label="...">
-	<!--  <a href = "tester.html" class="btn btn-default">Tester</a> -->
-	  <a href="manager.html" class="btn btn-default disabled">Manager</a>
-      <a href="account.html" class="btn btn-default">Create Account</a>
-  </div>
+    <!-- manager's buttons
+         * to the table listing all bugs
+         * to the page where they assign testers and developers
+         * to the page where they can create new accounts -->
+  	  <div class="btn-group" role="group" aria-label="...">
+        <a href = "table.html" class="btn btn-default">Table</a>
+        <a href="manager.html" class="btn btn-default disabled">Manager</a>
+        <a href="account.html" class="btn btn-default">Create Account</a>
+    </div>
 
-  <form style = "width:200px; float:right" align="right">
-  	<input id = "logoutid" type="button" value = "Logout" onClick = "logout();" />
-</form>
+    <!-- logout button -->
+	<form style = "width:200px; float:right" align="right">
+		<input id = "logoutid" type="button" value = "Logout" onClick= "logout();" />
+	</form>
 
-  <br>
-  <br>
+<br>
+<br>
+<br>
+<br>
+
 <script type="text/javascript">
 
+/*
+    logout()
+    no parameters
+    return type: null
+    logs the user out by setting username and permission to " " and returning user to index.html
+*/
 function logout() {
     sessionStorage.setItem("username", " ");
     sessionStorage.setItem("permission", " ");
 
 	document.location.href = "index.html";
 }
-function managerData() {
-	//var data = "manager="+"manager1";
 
+/*
+    managerData()
+    no parameters
+    return type: null
+    creates and displays a table listing all of the bugs that need a tester or developer assigned
+    * tester assigned immediately after bug is reported
+    * developer assigned if tester deems the bug to be an issue
+    includes information such as the system, description, and details of the bug
+        as well as the tester, developer, date created, date last updated, severity, and more
+*/
+function managerData() {
 	var testNameList;
 	var devNameList;
 	$.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getTesterList",
-		//data: data,
 		type: "GET",
 		beforeSend: function(xhr) {
 		xhr.setRequestHeader('x-api-key', '32ItpXeTc36ERMAUZTaQY3aD40PKvh57JomYO07g');
@@ -54,7 +79,6 @@ function managerData() {
 	})
 	$.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getDeveloperList",
-		//data: data,
 		type: "GET",
 		beforeSend: function(xhr) {
 		xhr.setRequestHeader('x-api-key', 'W6pHG4Y8kD7iAvhjVKhoN5WjdqBYsifXadyiVCh0');
@@ -63,10 +87,8 @@ function managerData() {
 			devNameList= data;
 		}	
 	})
-
 	$.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/getManager",
-		//data: data,
 		type: "GET",
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader('x-api-key', 'NyIwQLLyus97qJRhul7Zw7iMZlliEkC33OGoC3HS');
@@ -245,6 +267,16 @@ function managerData() {
 		}
 	})
 }
+
+/*
+	assignToTest()
+	parameters: 
+	* bugID (string): the id of the bug being assigned to a tester
+	* devName (string): the username of the tester the bug is being assigned to
+	return type: null
+	when the bug is deemed an issue and the manager has to choose a tester, they may choose from a dropdown
+		menu of all users with permission "tester" and assign the bug to that user
+*/
 function assignToTest(bugID,testName) {
 	var data = "tester="+testName + "&id="+bugID;
 	$.ajax({
@@ -260,6 +292,16 @@ function assignToTest(bugID,testName) {
 			   }
 		})
 }
+
+/*
+	assignToDev()
+	parameters: 
+	* bugID (string): the id of the bug being assigned to a developer
+	* devName (string): the username of the developer the bug is being assigned to
+	return type: null
+	when the bug is deemed an issue and the manager has to choose a developer, they may choose from a dropdown
+		menu of all users with permission "developer" and assign the bug to that user
+*/
 function assignToDev(bugID,devName) {
 	var data = "developer="+devName  + "&id="+bugID;
 
@@ -277,6 +319,7 @@ function assignToDev(bugID,devName) {
 }
 var permission = sessionStorage.getItem('permission');
 
+// if the user doesn't have manager permissions, send them back to the index page
 if(permission=="manager") {
 	managerData();
 }

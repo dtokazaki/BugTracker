@@ -9,23 +9,26 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <meta content="utf-8" http-equiv="encoding">
+<title>SCU IT Bug Reporting Program</title>
 </head>
-<body>
-
+<!-- 
+this page is used by the manager (only) to view all reported bugs
+the manager can also change pages to look at all bugs reported, or the bugs that need
+    a tester or developer assigned
+the manager can also log out
+ -->
 <body style="margin:25">
-    <a href = "table.html">
-        <button type="button" class="btn btn-default disabled">Table</button></a>
-  <!--  <a href = "index.html"> -->
-      <!--  <button type="button" class="btn btn-default">Home</button></a> -->
+    <!-- manager's buttons
+         * to the table listing all bugs
+         * to the page where they assign testers and developers
+         * to the page where they can create new accounts -->
   	  <div class="btn-group" role="group" aria-label="...">
-	  <!--
-        <a href = "tester.html" class="btn btn-default">Tester</a>
-        <a href="developer.html" class="btn btn-default">Developer</a> -->
+        <a href = "table.html" class="btn btn-default disabled">Table</a>
         <a href="manager.html" class="btn btn-default">Manager</a>
         <a href="account.html" class="btn btn-default">Create Account</a>
-
     </div>
 
+    <!-- logout button -->
 	<form style = "width:200px; float:right" align="right">
 		<input id = "logoutid" type="button" value = "Logout" onClick= "logout();" />
 	</form>
@@ -37,12 +40,27 @@
 
 <script type="text/javascript">
 
+
+/*
+    logout()
+    no parameters
+    return type: null
+    logs the user out by setting username and permission to " " and returning user to index.html
+*/
 function logout() {
     sessionStorage.setItem("username", " ");
     sessionStorage.setItem("permission", " ");
 	document.location.href = "index.html";
 }
 
+/*
+    bugData()
+    no parameters
+    return type: null
+    creates and displays a table listing all of the bugs that have been reporting
+    includes information such as the system, description, and details of the bug
+        as well as the tester, developer, date created, date last updated, severity, and more
+*/
 function bugData() {
     var data;
     $.ajax({

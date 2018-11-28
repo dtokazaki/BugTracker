@@ -9,32 +9,47 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <meta content="utf-8" http-equiv="encoding">
-
 <title>SCU IT Bug Tracking Program</title>
 </head>
+<!-- 
+this page can be used by testers only
+each tester can look at bugs assigned to them, adjust the severity level, add a description, and
+	mark the bugs as an issue or fixed
+testers can also logout
+ -->
 <body style="margin:25">
-
-  <form style = "width: 200px; float:right" align= "right">
-  	<input id = "logoutid" type="button" value="Logout" onClick = "logout();" />
-  </form>
-
-  <br>
-  <br>
-  <br>
-  <br>
-  <p id="testerName"> </p>
+	<form style = "width: 200px; float:right" align= "right">
+	  	<input id = "logoutid" type="button" value="Logout" onClick = "logout();" />
+	</form>
+<br>
+<br>
+<p id="testerName"> </p>
 <script type="text/javascript">
 
+/*
+    logout()
+    no parameters
+    return type: null
+    logs the user out by setting username and permission to " " and returning user to index.html
+*/
 function logout() {
 	sessionStorage.setItem("permission", " ");
 	sessionStorage.setItem("username", " ");
 	document.location.href = "index.html";
-
-
 }
 
-function testerData(tester) {
-	
+/*
+    testerData()
+    no parameters
+    return type: null
+    creates and displays a table listing all of the bugs that are assigned to the developer who logged in
+    includes information such as the system, description, and details of the bug
+        as well as the tester, developer, date created, date last updated, severity, and more
+    also include the abiity to look at developer's description, to add/change their own description,
+    	to adjust the severity level, and to mark as an issue or fixed
+    	* if marked as an issue, either goes to manager (if no developer assigned) or to the assigned developer
+*/
+function testerData(tester) {	
 	 var data = "tester="+ tester;
 	 document.getElementById("testerName").innerHTML = "Username: ".bold() + tester;
 	 $.ajax({
@@ -281,6 +296,18 @@ function testerData(tester) {
 	})
 
 }
+
+/*
+	toManager()
+	parameters: 
+	* bugID (string): the id of the bug being sent to the manager
+	* testerName (string): the username of the tester the bug is assigned to
+	* sevLevel (string): severity level of the bug
+	* txt (string): the (updated) tester's description of the bug
+	return type: null
+	when the tester thinks the bug they were looking at is an issue, but no developer was assigned,
+		they can send it to manager with their own description and a severity level
+*/
 function toManager(bugID,testerName,sevLevel,txt) {
 	console.log(bugID);
 	console.log(testerName);
@@ -301,6 +328,18 @@ function toManager(bugID,testerName,sevLevel,txt) {
 			   }
 		})
 }
+
+/*
+	toDev()
+	parameters: 
+	* bugID (string): the id of the bug being sent to the manager
+	* testerName (string): the username of the tester the bug is assigned to
+	* sevLevel (string): severity level of the bug
+	* txt (string): the (updated) tester's description of the bug
+	return type: null
+	when the tester thinks the bug they were looking at is an issue, and a developer was assigned,
+		they can send it to the developer with a potentially updated severity level and description
+*/
 function toDev(bugID,testerName,sevLevel,txt) {
 	var data = "text="+txt + "&tester="+testerName + "&id="+bugID + "&severity=" + sevLevel;
 	console.log(data);
@@ -318,6 +357,17 @@ function toDev(bugID,testerName,sevLevel,txt) {
 			   }
 		})
 }
+
+/*
+	fixed()
+	parameters: 
+	* bugID (string): the id of the bug being sent to the manager
+	* testerName (string): the username of the tester the bug is assigned to
+	* txt (string): the (updated) tester's description of the bug
+	return type: null
+	when the tester thinks the bug they were looking at is fixed, they can update the status 
+		and remove the bug from the testing cycle
+*/
 function fixed(bugID,testerName,txt) {
 	var data = "text=" + txt + "&tester="+testerName + "&id="+bugID;
 	$.ajax({
@@ -334,7 +384,7 @@ function fixed(bugID,testerName,txt) {
 		})
 }
 var permission = sessionStorage.getItem('permission');
-
+// if the user doesn't have tester permissions, send them back to the index page
 if(permission == "tester") {
 	testerData(sessionStorage.getItem('username'));
 }
