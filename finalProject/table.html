@@ -22,6 +22,8 @@
         <a href = "tester.html" class="btn btn-default">Tester</a>
         <a href="developer.html" class="btn btn-default">Developer</a> -->
         <a href="manager.html" class="btn btn-default">Manager</a>
+        <a href="account.html" class="btn btn-default">Create Account</a>
+
     </div>
 
 	<form style = "width:200px; float:right" align="right">
@@ -36,7 +38,8 @@
 <script type="text/javascript">
 
 function logout() {
-	sessionStorage.setItem("username", " ");
+    sessionStorage.setItem("username", " ");
+    sessionStorage.setItem("permission", " ");
 	document.location.href = "index.html";
 }
 

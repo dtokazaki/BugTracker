@@ -24,8 +24,15 @@ function createItem() {
 	console.log(sys);
 	console.log(des);
 	console.log(doi);
-	var data = "description=" + des +"&details="+doi + 
-		"&system="+sys ;
+
+	if (des.trim().length == 0) {
+	    alert("Please Fill Out Description")
+	    return;
+	}
+
+	if (doi.trim().length == 0) doi = " ";
+	
+	var data = "description=" + des +"&details="+doi + "&system="+sys ;
 	$.ajax({
 		url: "https://052stnmylg.execute-api.us-west-1.amazonaws.com/firstTest/createForm",
 		data: data,
@@ -70,7 +77,10 @@ function login() {
 	var username = document.getElementById("username").value;
 	var password = document.getElementById("password").value;
 
-	if(username == "" || password == "") return;
+	if (username.trim().length == 0 || password.trim().length == 0) {
+        alert("Please Fill Out Credentials")
+	    return;
+	}
 
 	// console.log(username);
 	// console.log(password);
@@ -115,7 +125,9 @@ function login() {
 
 }
 
-sessionStorage.setItem('username'," ");
+sessionStorage.setItem('username', " ");
+sessionStorage.setItem('permission', " ");
+
 </script>
 </head>
 
